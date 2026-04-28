@@ -475,181 +475,197 @@ function buildIS(svg){
 
 // ─── Build FS diagram ───────────────────────────────────────────────────────
 function buildFS(svg){
-  const W=520, cx=W/2;
-  const NW=230, NH=44;
-  let y=20;
+  // 幅広レイアウト: 信販フローが複雑なので横に展開
+  const W = 700;
+  const cx = W / 2;  // 350
+  const NW = 230, NH = 44;
+  let y = 20;
 
-  const n0=node(svg,cx-NW/2,y,NW,NH,'🤝 面談',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
-  varrow(svg,cx,y,y+16,C.fs); y+=16;
+  // ── 面談 ──
+  node(svg,cx-NW/2,y,NW,NH,'🤝 面談',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
+  varrow(svg,cx,y,y+20,C.fs); y+=20;
 
-  // 合格？
-  const d1=diamond(svg,cx,y+36,52,36,'合格？'); y+=72;
-  const bTopY=y+8, bLC=cx-80, bRC=cx+80;
-  elbow(svg,d1.left,d1.cy,bLC,bTopY,d1.cy,C.no,'NO');
-  node(svg,bLC-60,bTopY,120,44,'不合格通知\nor ダウンセル打診','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
-  elbow(svg,d1.right,d1.cy,bRC,bTopY,d1.cy,C.yes,'YES');
-  node(svg,bRC-60,bTopY,120,44,'🚀 ロケット\n~約3日',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,12);
-  varrow(svg,bRC,bTopY+44,bTopY+66,C.fs);
-  node(svg,bRC-60,bTopY+66,120,44,'📞 CB\n~即日〜',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,12);
+  // ── 合格？ ──
+  const d1=diamond(svg,cx,y+38,54,38,'合格？'); y+=76;
+  const b1L=cx-100, b1R=cx+100, b1TopY=y+12;
+  elbow(svg,d1.left,d1.cy,b1L,b1TopY,d1.cy,C.no,'NO');
+  node(svg,b1L-60,b1TopY,120,44,'不合格通知\nor ダウンセル打診','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  elbow(svg,d1.right,d1.cy,b1R,b1TopY,d1.cy,C.yes,'YES');
+  node(svg,b1R-60,b1TopY,120,44,'🚀 ロケット\n~約3日',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,12);
+  varrow(svg,b1R,b1TopY+44,b1TopY+70,C.fs);
+  node(svg,b1R-60,b1TopY+70,120,44,'📞 CB\n~即日〜',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,12);
+  y=b1TopY+70+44+20;
+  varrow(svg,b1R,b1TopY+70+44,y,C.yes);
+  varrow(svg,b1L,b1TopY+44,y,C.no);
+  svg.appendChild(el('line',{x1:b1L,y1:y,x2:b1R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+20,C.yes); y+=20;
 
-  y=bTopY+66+44+16;
-  varrow(svg,bRC,bTopY+66+44,y,C.yes);
-  varrow(svg,bLC,bTopY+44,y,C.no);
-  svg.appendChild(el('line',{x1:bLC,y1:y,x2:bRC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,cx,y,y+14,C.yes); y+=14;
+  // ── 辞退意向あり？ ──
+  const d2=diamond(svg,cx,y+38,60,38,'辞退意向\nあり？'); y+=76;
+  const b2L=cx-100, b2R=cx+100, b2TopY=y+12;
+  elbow(svg,d2.left,d2.cy,b2L,b2TopY,d2.cy,C.no,'YES');
+  node(svg,b2L-60,b2TopY,120,44,'辞退処理\nor 掘り起こし','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  elbow(svg,d2.right,d2.cy,b2R,b2TopY,d2.cy,C.yes,'NO');
+  y=b2TopY+44+20;
+  varrow(svg,b2R,b2TopY,y,C.yes);
+  varrow(svg,b2L,b2TopY+44,y,C.no);
+  svg.appendChild(el('line',{x1:b2L,y1:y,x2:b2R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+20,C.yes); y+=20;
 
-  // 辞退意向
-  const d2=diamond(svg,cx,y+36,58,36,'辞退意向\nあり？'); y+=72;
-  const b2TopY=y+8, b2LC=cx-80, b2RC=cx+80;
-  elbow(svg,d2.left,d2.cy,b2LC,b2TopY,d2.cy,C.no,'YES');
-  node(svg,b2LC-60,b2TopY,120,44,'辞退処理\nor 掘り起こし','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
-  elbow(svg,d2.right,d2.cy,b2RC,b2TopY,d2.cy,C.yes,'NO');
-  // right branch just a line down
-  y=b2TopY+44+16;
-  varrow(svg,b2RC,b2TopY,y,C.yes);
-  varrow(svg,b2LC,b2TopY+44,y,C.no);
-  svg.appendChild(el('line',{x1:b2LC,y1:y,x2:b2RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,cx,y,y+14,C.yes); y+=14;
+  // ── 契約日確定？ ──
+  const d3=diamond(svg,cx,y+38,60,38,'契約日\n確定？'); y+=76;
+  const b3L=cx-100, b3R=cx+100, b3TopY=y+12;
+  elbow(svg,d3.left,d3.cy,b3L,b3TopY,d3.cy,C.no,'NO');
+  noteBox(svg,b3L-55,b3TopY,110,40,['当週で打診','ダウンセルも打診']);
+  elbow(svg,d3.right,d3.cy,b3R,b3TopY,d3.cy,C.yes,'YES');
+  const sd3=diamond(svg,b3R,b3TopY+56,52,32,'契約前\n辞退？');
+  varrow(svg,b3R,b3TopY+56+32,b3TopY+56+32+16,C.no);
+  node(svg,b3R-55,b3TopY+56+32+16,110,44,'ディレ対応\n→再契約 or 辞退','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  y=b3TopY+56+32+16+44+20;
+  varrow(svg,b3R,b3TopY+56+32+16+44,y,C.no);
+  varrow(svg,b3L,b3TopY+40,y,C.no);
+  svg.appendChild(el('line',{x1:b3L,y1:y,x2:b3R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+20,C.yes); y+=20;
 
-  // 契約日確定？
-  const d3=diamond(svg,cx,y+36,58,36,'契約日\n確定？'); y+=72;
-  const b3TopY=y+8, b3LC=cx-80, b3RC=cx+80;
-  elbow(svg,d3.left,d3.cy,b3LC,b3TopY,d3.cy,C.no,'NO');
-  noteBox(svg,b3LC-55,b3TopY,110,40,['当週で打診','ダウンセルも打診']);
-  elbow(svg,d3.right,d3.cy,b3RC,b3TopY,d3.cy,C.yes,'YES');
-  const sd3=diamond(svg,b3RC,b3TopY+54,50,30,'契約前\n辞退？');
-  varrow(svg,b3RC,b3TopY+54+30,b3TopY+54+30+14,C.no);
-  node(svg,b3RC-55,b3TopY+54+30+14,110,44,'ディレ対応\n→再契約 or 辞退','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  // ── 契約 ──
+  node(svg,cx-NW/2,y,NW,NH,'📝 契約',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
+  varrow(svg,cx,y,y+24,C.fs); y+=24;
 
-  y=b3TopY+54+30+14+44+16;
-  varrow(svg,b3RC,b3TopY+54+30+14+44,y,C.no);
-  varrow(svg,b3LC,b3TopY+40,y,C.no);
-  svg.appendChild(el('line',{x1:b3LC,y1:y,x2:b3RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,cx,y,y+16,C.yes); y+=16;
+  // ════════════════════════════════════════
+  //  信販フロー
+  //  X座標割り当て（左→右）:
+  //    reOkX=80   reCX=160  s2X=260  cx=350  rmDirX=440  slDirX=520  approveX=620
+  // ════════════════════════════════════════
 
-  const nContract=node(svg,cx-NW/2,y,NW,NH,'📝 契約',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
-  varrow(svg,cx,y,y+16,C.fs); y+=16;
+  const approveX = 620;  // 1社目承認
+  const s2X      = 240;  // 2社目審査
+  const s2OkX    = 340;  // 2社目承認 → 進行開始（s2の右）
+  const rmDirX   = 460;  // RM直接
+  const reCX     = 160;  // 信販再審査
+  const reOkX    = 60;   // 再審査承認 → 進行開始
+  const slDirX   = 520;  // 自社ローン直接（NO側）
 
-  // ── 信販フロー ──────────────────────────────────────────────────
-  // レイアウト方針:
-  //  中央: 信販審査(1社目) → 承認/否決
-  //  承認  → 右上: 進行開始
-  //  否決  → 2社目審査 or RM対応(2社目なし) の2択
-  //  2社目承認 → 進行開始
-  //  2社目否決 → RM対応
-  //  RM対応 → 再審査価値あり？
-  //    YES → 信販再審査 → 承認→進行開始 / 否決→自社ローン
-  //    NO  → 自社ローン
+  // ── 信販審査（1社目）──
+  const d4=diamond(svg,cx,y+42,66,42,'信販審査\n（1社目）'); y+=84;
 
-  const FSW = 520; // FS SVGの横幅を広げる
-  svg.setAttribute('width', FSW);
-  const fsCX = FSW/2;
+  // 承認 → 右へ
+  const apTopY=y+16;
+  elbow(svg,d4.right,d4.cy,approveX,apTopY,d4.cy,C.yes,'承認');
+  node(svg,approveX-55,apTopY,110,42,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
 
-  // 信販審査（1社目）
-  const d4=diamond(svg,fsCX,y+38,62,38,'信販審査\n（1社目）'); y+=76;
+  // 否決 → 下へ
+  varrow(svg,cx,y,y+20,C.no,'否決','right'); y+=20;
 
-  // 承認 → 右: 進行開始
-  const approveX = fsCX+150;
-  const denyX    = fsCX;      // 否決は真下へ
+  // ── 2社目審査する？──
+  const d5=diamond(svg,cx,y+42,72,42,'2社目\n審査する？'); y+=84;
 
-  const approveTopY = y+10;
-  elbow(svg,d4.right,d4.cy,approveX,approveTopY,d4.cy,C.yes,'承認');
-  node(svg,approveX-55,approveTopY,110,40,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
-
-  // 否決 → 真下
-  varrow(svg,fsCX,y,y+14,C.no,'否決','right'); y+=14;
-
-  // 「2社目審査 or RM対応（直接）」 分岐ひし形
-  const d5=diamond(svg,fsCX,y+38,70,38,'2社目\n審査する？'); y+=76;
-
-  // YES: 2社目審査 (左)
-  const s2X = fsCX-130;
-  const s2TopY = y+10;
+  // YES(左): 2社目審査
+  const s2TopY=y+16;
   elbow(svg,d5.left,d5.cy,s2X,s2TopY,d5.cy,C.yes,'YES');
-  const ds2=diamond(svg,s2X,s2TopY+50,54,34,'2社目\n承認？');
+  const ds2=diamond(svg,s2X,s2TopY+54,56,36,'2社目\n承認？');
 
-  // 2社目承認 → 進行開始
-  const s2OkX=s2X+90;
-  const s2OkY=s2TopY+50;
-  elbow(svg,ds2.right,ds2.cy,s2OkX,s2OkY,ds2.cy,C.yes,'承認');
-  node(svg,s2OkX-50,s2OkY,100,40,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  // 2社目承認 → 右へ進行開始
+  const s2OkTopY=s2TopY+54;
+  elbow(svg,ds2.right,ds2.cy,s2OkX,s2OkTopY,ds2.cy,C.yes,'承認');
+  node(svg,s2OkX-50,s2OkTopY,100,42,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
 
-  // 2社目否決 → RM対応（下へ）
-  const s2DenyY=s2TopY+50+34+14;
-  varrow(svg,s2X,s2TopY+50+34,s2DenyY,C.no,'否決','right');
+  // 2社目否決 → 下へ（RM合流点まで）
+  const s2DenyBottomY=s2TopY+54+36+20;
+  varrow(svg,s2X,s2TopY+54+36,s2DenyBottomY,C.no,'否決','right');
 
-  // NO: RM対応（直接）(右)
-  const rmDirX=fsCX+130;
-  const rmDirTopY=y+10;
-  elbow(svg,d5.right,d5.cy,rmDirX,rmDirTopY,d5.cy,C.no,'NO（直接）');
+  // NO(右): RM直接
+  elbow(svg,d5.right,d5.cy,rmDirX,s2TopY,d5.cy,C.no,'NO（直接）');
 
-  // 両方のRM対応をまとめるY
-  const rmJoinY=Math.max(s2DenyY,rmDirTopY)+10;
-  // 左のRM否決線
-  varrow(svg,s2X,s2DenyY,rmJoinY,C.no);
-  // 右のRM直接線
-  varrow(svg,rmDirX,rmDirTopY,rmJoinY,C.no);
-  // 合流線
+  // RM合流
+  const rmJoinY=Math.max(s2DenyBottomY, s2TopY+20)+10;
+  varrow(svg,s2X,s2DenyBottomY,rmJoinY,C.no);
+  varrow(svg,rmDirX,s2TopY,rmJoinY,C.no);
   svg.appendChild(el('line',{x1:s2X,y1:rmJoinY,x2:rmDirX,y2:rmJoinY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,fsCX,rmJoinY,rmJoinY+14,C.neutral); y=rmJoinY+14;
+  varrow(svg,cx,rmJoinY,rmJoinY+20,C.neutral); y=rmJoinY+20;
 
-  // RM対応ボックス
-  const nRM=node(svg,fsCX-60,y,120,40,'⚙️ RM対応',C.warn,'rgba(245,158,11,0.08)',C.warn,6,12,'bold'); y+=40;
-  varrow(svg,fsCX,y,y+14,C.neutral); y+=14;
+  // ── RM対応 ──
+  node(svg,cx-65,y,130,44,'⚙️ RM対応',C.warn,'rgba(245,158,11,0.08)',C.warn,6,13,'bold'); y+=44;
+  varrow(svg,cx,y,y+20,C.neutral); y+=20;
 
-  // 再審査価値あり？
-  const d6=diamond(svg,fsCX,y+38,74,38,'再審査\n価値あり？'); y+=76;
+  // ── 再審査価値あり？──
+  const d6=diamond(svg,cx,y+42,78,42,'再審査\n価値あり？'); y+=84;
 
-  // YES → 信販再審査
-  const reCX=fsCX-130;
-  const reTopY=y+10;
+  // YES(左): 信販再審査
+  const reTopY=y+16;
   elbow(svg,d6.left,d6.cy,reCX,reTopY,d6.cy,C.yes,'YES');
-  const dRe=diamond(svg,reCX,reTopY+50,54,34,'信販\n再審査');
+  const dRe=diamond(svg,reCX,reTopY+56,56,36,'信販\n再審査');
 
-  // 再審査承認 → 進行開始
-  const reOkX=reCX-80;
-  elbow(svg,dRe.left,dRe.cy,reOkX,reTopY+50,dRe.cy,C.yes,'承認');
-  node(svg,reOkX-50,reTopY+50,100,40,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  // 再審査承認 → 左へ進行開始
+  const reOkTopY=reTopY+56;
+  elbow(svg,dRe.left,dRe.cy,reOkX,reOkTopY,dRe.cy,C.yes,'承認');
+  node(svg,reOkX-50,reOkTopY,100,42,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
 
-  // 再審査否決 → 自社ローン（下へ）
-  const reNoY=reTopY+50+34+14;
-  varrow(svg,reCX,reTopY+50+34,reNoY,C.no,'否決','right');
+  // 再審査否決 → 自社ローン合流点へ
+  const reNoBottomY=reTopY+56+36+20;
+  varrow(svg,reCX,reTopY+56+36,reNoBottomY,C.no,'否決','right');
 
-  // NO → 自社ローン直接
-  const slDirX=fsCX+130;
-  const slDirTopY=y+10;
-  elbow(svg,d6.right,d6.cy,slDirX,slDirTopY,d6.cy,C.no,'NO');
+  // NO(右): 自社ローン直接
+  elbow(svg,d6.right,d6.cy,slDirX,reTopY,d6.cy,C.no,'NO');
 
-  // 自社ローン合流Y
-  const slJoinY=Math.max(reNoY,slDirTopY)+10;
-  varrow(svg,reCX,reNoY,slJoinY,C.no);
-  varrow(svg,slDirX,slDirTopY,slJoinY,C.no);
+  // 自社ローン合流
+  const slJoinY=Math.max(reNoBottomY,reTopY+20)+10;
+  varrow(svg,reCX,reNoBottomY,slJoinY,C.no);
+  varrow(svg,slDirX,reTopY,slJoinY,C.no);
   svg.appendChild(el('line',{x1:reCX,y1:slJoinY,x2:slDirX,y2:slJoinY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,fsCX,slJoinY,slJoinY+14,C.neutral); y=slJoinY+14;
+  varrow(svg,cx,slJoinY,slJoinY+20,C.neutral); y=slJoinY+20;
 
-  // 自社ローンで契約
-  node(svg,fsCX-70,y,140,42,'🏦 自社ローンで契約',C.text,'rgba(59,130,246,0.1)','rgba(59,130,246,0.4)',6,12,'bold'); y+=42;
-  varrow(svg,fsCX,y,y+14,C.fs); y+=14;
+  // ── 自社ローンで契約 ──
+  node(svg,cx-75,y,150,44,'🏦 自社ローンで契約',C.text,'rgba(59,130,246,0.1)','rgba(59,130,246,0.4)',6,12,'bold'); y+=44;
+  varrow(svg,cx,y,y+30,C.fs); y+=30;
 
-  // 信販承認ルートも合流
-  const fsResumeY=y;
-  varrow(svg,approveX,approveTopY+40,fsResumeY,C.yes);
-  varrow(svg,s2OkX,s2OkY+40,fsResumeY,C.yes);
-  varrow(svg,reOkX,reTopY+50+40,fsResumeY,C.yes);
-  svg.appendChild(el('line',{x1:approveX,y1:fsResumeY,x2:fsCX,y2:fsResumeY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,fsCX,y,y+16,C.fs); y+=16;
+  // ════════════════════════════════════════
+  //  商品選択バー（全ルートが収束する横長バー）
+  // ════════════════════════════════════════
+  const barY = y;
+  const barX = 20, barW = W-40, barH = 52;
 
-  // 商品 MP/VP
-  const dBig=diamond(svg,fsCX,y+46,68,44,'商品\nMP / VP',C.fs,C.fs); y+=90;
+  // 全承認ルートから矢印を収束させる
+  // 承認ルートたちのX座標と底辺Y
+  const routes = [
+    {x: approveX, fromY: apTopY+42},
+    {x: s2OkX,    fromY: s2OkTopY+42},
+    {x: reOkX,    fromY: reOkTopY+42},
+    {x: cx,       fromY: y},   // 自社ローン（既にvarrowで繋いだのでここはバーへ）
+  ];
 
-  const mpX=fsCX-90, vpX=fsCX+90;
-  const forkY=y+8;
-  elbow(svg,dBig.left,dBig.cy,mpX,forkY,dBig.cy,C.mp,'MP');
-  node(svg,mpX-55,forkY,110,38,'→ MP 楽曲制作',C.mp,'rgba(59,130,246,0.06)','rgba(59,130,246,0.5)',7,11,'bold');
-  elbow(svg,dBig.right,dBig.cy,vpX,forkY,dBig.cy,C.vp,'VP');
-  node(svg,vpX-55,forkY,110,38,'→ VP 提供',C.vp,'rgba(168,85,247,0.06)','rgba(168,85,247,0.5)',7,11,'bold');
+  // 承認ルート3本を横線でバーの上端へ収束
+  [
+    {x:approveX, fromY:apTopY+42},
+    {x:s2OkX,    fromY:s2OkTopY+42},
+    {x:reOkX,    fromY:reOkTopY+42},
+  ].forEach(({x,fromY})=>{
+    // 各承認ノードの底辺からバーTopまで縦線
+    svg.appendChild(el('line',{x1:x,y1:fromY,x2:x,y2:barY,stroke:C.yes,'stroke-width':2}));
+    // バーTopへの水平線
+    svg.appendChild(el('line',{x1:x,y1:barY,x2:cx,y2:barY,stroke:C.yes,'stroke-width':2,'stroke-dasharray':'4,3'}));
+  });
 
-  y=forkY+38+20;
+  // バー描画
+  svg.appendChild(el('rect',{x:barX,y:barY,width:barW,height:barH,rx:10,
+    fill:'rgba(249,115,22,0.15)',stroke:'#f97316','stroke-width':2}));
+  const barLabel=el('text',{x:barX+barW/2,y:barY+barH/2,'text-anchor':'middle','dominant-baseline':'middle',
+    fill:'#fb923c','font-size':15,'font-weight':700,'font-family':"'Syne','Noto Sans JP',sans-serif"});
+  barLabel.textContent='商品選択   MP  /  VP'; svg.appendChild(barLabel);
+
+  y=barY+barH+24;
+
+  // バーからMP・VPへ
+  const mpX=cx-110, vpX=cx+110;
+  varrow(svg,mpX,barY+barH,y,C.mp,'MP','right');
+  varrow(svg,vpX,barY+barH,y,C.vp,'VP','right');
+  // バー底辺からmpX・vpXへ水平線
+  svg.appendChild(el('line',{x1:barX+barW/2-2,y1:barY+barH,x2:mpX,y2:barY+barH,stroke:C.mp,'stroke-width':2}));
+  svg.appendChild(el('line',{x1:barX+barW/2+2,y1:barY+barH,x2:vpX,y2:barY+barH,stroke:C.vp,'stroke-width':2}));
+
+  node(svg,mpX-58,y,116,42,'→ MP 楽曲制作',C.mp,'rgba(59,130,246,0.06)','rgba(59,130,246,0.5)',7,12,'bold');
+  node(svg,vpX-58,y,116,42,'→ VP 提供',C.vp,'rgba(168,85,247,0.06)','rgba(168,85,247,0.5)',7,12,'bold');
+
+  y+=42+20;
   svg.setAttribute('width',W);
   svg.setAttribute('height',y);
 }
