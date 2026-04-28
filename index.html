@@ -6,303 +6,129 @@
 <title>全社オペレーションフロー | apra Inc.</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{
+  --site-bg:#090b12;--site-surface:#0d1020;--site-border:#1e2236;--site-border2:#2a2f45;
+  --site-text:#e4e8f4;--site-sub:#6b738f;--site-dim:#3a3f55;
+  --accent:#4f7cff;--accent2:#7c5cfc;
+  --bg:#0d0f18;
+  --is:#22c55e;--is-dim:rgba(34,197,94,0.12);--is-stroke:rgba(34,197,94,0.5);
+  --fs:#f97316;--fs-dim:rgba(249,115,22,0.12);--fs-stroke:rgba(249,115,22,0.5);
+  --mp:#3b82f6;--mp-dim:rgba(59,130,246,0.12);--mp-stroke:rgba(59,130,246,0.5);
+  --vp:#a855f7;--vp-dim:rgba(168,85,247,0.12);--vp-stroke:rgba(168,85,247,0.5);
+  --yes:#22c55e;--no:#ef4444;--neutral:#94a3b8;
+  --node-bg:#1a1d2e;--node-border:#2e3348;
+  --diamond-bg:#1e2135;--diamond-border:#e2c86e;
+  --text:#e2e8f0;--text-sub:#94a3b8;
+  --surface:#13151f;--border:#252838;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--site-bg);color:var(--site-text);font-family:'Noto Sans JP',sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;}
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:58px;border-bottom:1px solid var(--site-border);background:rgba(9,11,18,0.92);backdrop-filter:blur(16px);}
+.logo{display:flex;align-items:center;gap:11px;}
+.logo-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#fff;box-shadow:0 0 16px rgba(79,124,255,0.35);}
+.logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;}
+.logo-jp{font-size:10px;color:var(--site-sub);}
+.header-badge{display:flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--site-border2);background:var(--site-surface);font-size:11px;color:var(--site-sub);}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero{position:relative;z-index:1;padding:40px 40px 32px;border-bottom:1px solid var(--site-border);}
+.hero-tag{display:inline-flex;font-family:'Syne',monospace;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);padding:3px 9px;border:1px solid rgba(79,124,255,.3);border-radius:4px;background:rgba(79,124,255,.06);margin-bottom:14px;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,38px);font-weight:800;letter-spacing:-.02em;margin-bottom:10px;}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-desc{font-size:13px;color:var(--site-sub);line-height:1.7;max-width:520px;font-weight:300;margin-bottom:16px;}
+.phase-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.pb{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:5px;border:1px solid;font-size:11px;font-family:'Syne',monospace;font-weight:600;}
+.pb-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.pb-is{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:#22c55e;}
+.pb-fs{border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06);color:#f97316;}
+.pb-mp{border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.06);color:#3b82f6;}
+.pb-vp{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.06);color:#a855f7;}
+.pb-sep{color:var(--site-dim);font-size:12px;}
+.flow-section{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;}
+.flow-toolbar{display:flex;align-items:center;justify-content:space-between;padding:10px 40px;border-bottom:1px solid var(--site-border);background:var(--site-surface);flex-shrink:0;}
+.zoom-controls{display:flex;gap:5px;align-items:center;}
+.zoom-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:5px;cursor:pointer;font-size:13px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+.zoom-btn:hover{background:var(--border);}
+.zoom-lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--site-sub);width:36px;text-align:center;}
+.legend-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--site-sub);}
+.li-pip{width:9px;height:9px;border-radius:2px;}
+.li-dia{width:9px;height:9px;background:var(--diamond-bg);border:1px solid var(--diamond-border);transform:rotate(45deg);}
+.li-line{width:18px;height:2px;}
+.sep2{width:1px;height:14px;background:var(--site-border2);}
+.flow-viewport{flex:1;overflow:auto;cursor:grab;background:var(--bg);min-height:500px;}
+.flow-viewport:active{cursor:grabbing;}
+.flow-viewport::-webkit-scrollbar{width:6px;height:6px;}
+.flow-viewport::-webkit-scrollbar-track{background:var(--bg);}
+.flow-viewport::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.canvas{transform-origin:top left;display:inline-flex;flex-direction:row;align-items:flex-start;padding:40px 40px 100px;gap:0;}
+footer{border-top:1px solid var(--site-border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(9,11,18,0.7);flex-shrink:0;}
+.footer-l{font-size:11px;color:var(--site-dim);}
+.footer-l strong{color:var(--site-sub);font-weight:500;}
+.footer-r{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--site-dim);letter-spacing:.08em;}
+.hint{position:fixed;bottom:14px;right:16px;background:rgba(19,21,31,.92);border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-size:11px;color:var(--text-sub);backdrop-filter:blur(8px);pointer-events:none;z-index:300;}
 
-:root {
-  /* site */
-  --site-bg: #090b12;
-  --site-surface: #0d1020;
-  --site-border: #1e2236;
-  --site-border2: #2a2f45;
-  --site-text: #e4e8f4;
-  --site-sub: #6b738f;
-  --site-dim: #3a3f55;
-  --accent: #4f7cff;
-  --accent2: #7c5cfc;
-  /* flow */
-  --bg: #0d0f18;
-  --is: #22c55e; --is-dim: rgba(34,197,94,0.12); --is-stroke: rgba(34,197,94,0.5);
-  --fs: #f97316; --fs-dim: rgba(249,115,22,0.12); --fs-stroke: rgba(249,115,22,0.5);
-  --mp: #3b82f6; --mp-dim: rgba(59,130,246,0.12); --mp-stroke: rgba(59,130,246,0.5);
-  --vp: #a855f7; --vp-dim: rgba(168,85,247,0.12); --vp-stroke: rgba(168,85,247,0.5);
-  --yes: #22c55e; --no: #ef4444; --neutral: #94a3b8;
-  --node-bg: #1a1d2e; --node-border: #2e3348;
-  --diamond-bg: #1e2135; --diamond-border: #e2c86e;
-  --text: #e2e8f0; --text-sub: #94a3b8;
-  --surface: #13151f; --border: #252838;
-}
+/* Phase column wrapper */
+.phase-col-wrap{display:flex;flex-direction:column;align-items:stretch;}
+.phase-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:6px 12px;border-bottom:2px solid;margin-bottom:0;white-space:nowrap;}
+.phase-lbl-is{color:var(--is);border-color:var(--is);}
+.phase-lbl-fs{color:var(--fs);border-color:var(--fs);}
+.phase-lbl-cs{color:var(--text-sub);border-color:var(--border);}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* horizontal phase connector */
+.h-conn{display:flex;align-items:center;padding-top:120px;flex-shrink:0;}
 
-html { height: 100%; }
-body {
-  min-height: 100%;
-  background: var(--site-bg);
-  color: var(--site-text);
-  font-family: 'Noto Sans JP', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  display: flex;
-  flex-direction: column;
-}
+/* CS fork */
+.cs-wrap{display:flex;flex-direction:column;}
+.cs-branches{display:flex;flex-direction:row;align-items:flex-start;}
+.cs-branch{display:flex;flex-direction:column;align-items:stretch;}
+.cs-branch-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-bottom:2px solid;white-space:nowrap;text-align:center;}
+.cs-branch-lbl-mp{color:var(--mp);border-color:var(--mp);}
+.cs-branch-lbl-vp{color:var(--vp);border-color:var(--vp);}
 
-/* grain */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: .4;
-}
-/* glow */
-body::after {
-  content: '';
-  position: fixed; top: -180px; left: 50%; transform: translateX(-50%);
-  width: 800px; height: 400px;
-  background: radial-gradient(ellipse, rgba(79,124,255,0.06) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-}
+/* plan cards */
+.plan-card{border-radius:8px;padding:12px 14px;}
+.plan-card-mp{border:1.5px solid var(--mp-stroke);background:var(--mp-dim);min-width:195px;max-width:230px;}
+.plan-card-vp{border:1.5px solid var(--vp-stroke);background:var(--vp-dim);min-width:195px;max-width:230px;}
+.plan-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;margin-bottom:9px;padding-bottom:6px;}
+.plan-title-mp{color:var(--mp);border-bottom:1px solid var(--mp-stroke);}
+.plan-title-vp{color:var(--vp);border-bottom:1px solid var(--vp-stroke);}
+.plan-step{display:flex;align-items:flex-start;gap:7px;font-size:11px;line-height:1.4;margin-bottom:2px;}
+.plan-dot{flex-shrink:0;margin-top:1px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'IBM Plex Mono',monospace;}
+.plan-dot-mp{border:1px solid var(--mp);background:rgba(59,130,246,.15);color:var(--mp);}
+.plan-dot-vp{border:1px solid var(--vp);background:rgba(168,85,247,.15);color:var(--vp);}
+.plan-sub{font-size:10px;color:var(--text-sub);margin:1px 0 1px 25px;line-height:1.5;}
+.plan-dn{font-size:10px;color:var(--text-sub);margin:2px 0 2px 25px;}
 
-/* ── HEADER ── */
-header {
-  position: sticky; top: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 40px; height: 58px;
-  border-bottom: 1px solid var(--site-border);
-  background: rgba(9,11,18,0.9);
-  backdrop-filter: blur(16px);
-}
-.logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
-.logo-mark {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px; color: #fff;
-  box-shadow: 0 0 16px rgba(79,124,255,0.35);
-}
-.logo-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: .04em; }
-.logo-jp { font-size: 10px; color: var(--site-sub); letter-spacing: .06em; }
-.header-badge {
-  display: flex; align-items: center; gap: 6px;
-  padding: 3px 10px; border-radius: 999px;
-  border: 1px solid var(--site-border2); background: var(--site-surface);
-  font-size: 11px; color: var(--site-sub);
-}
-.badge-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: #22c55e;
-  box-shadow: 0 0 5px rgba(34,197,94,0.6);
-  animation: blink 2s ease-in-out infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ── HERO ── */
-.hero {
-  position: relative; z-index: 1;
-  padding: 52px 40px 40px;
-  border-bottom: 1px solid var(--site-border);
-  animation: fadeUp .5s ease both;
-}
-.hero-tag {
-  display: inline-flex; align-items: center;
-  font-family: 'Syne', monospace; font-size: 10px; font-weight: 600;
-  letter-spacing: .18em; text-transform: uppercase; color: var(--accent);
-  padding: 3px 9px; border: 1px solid rgba(79,124,255,.3);
-  border-radius: 4px; background: rgba(79,124,255,.06); margin-bottom: 16px;
-}
-.hero h1 {
-  font-family: 'Syne', sans-serif; font-size: clamp(26px,3.5vw,44px);
-  font-weight: 800; letter-spacing: -.02em; line-height: 1.1;
-  margin-bottom: 12px;
-}
-.hero h1 em {
-  font-style: normal;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.hero-desc { font-size: 13px; color: var(--site-sub); line-height: 1.75; max-width: 520px; font-weight: 300; margin-bottom: 20px; }
-.phase-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.pb {
-  display: flex; align-items: center; gap: 5px;
-  padding: 4px 11px; border-radius: 5px; border: 1px solid;
-  font-size: 11px; font-family: 'Syne', monospace; font-weight: 600; letter-spacing: .07em;
-}
-.pb-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-.pb-is { border-color:rgba(34,197,94,.3);  background:rgba(34,197,94,.06);  color:#22c55e; }
-.pb-fs { border-color:rgba(249,115,22,.3); background:rgba(249,115,22,.06); color:#f97316; }
-.pb-mp { border-color:rgba(59,130,246,.3); background:rgba(59,130,246,.06); color:#3b82f6; }
-.pb-vp { border-color:rgba(168,85,247,.3); background:rgba(168,85,247,.06); color:#a855f7; }
-.pb-sep { color: var(--site-dim); font-size: 12px; }
-
-/* ── FLOW SECTION ── */
-.flow-section {
-  position: relative; z-index: 1;
-  flex: 1;
-  display: flex; flex-direction: column;
-  animation: fadeUp .55s ease .1s both;
-}
-.flow-toolbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 40px;
-  border-bottom: 1px solid var(--site-border);
-  background: var(--site-surface);
-  flex-shrink: 0;
-}
-.flow-toolbar-label {
-  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-  color: var(--site-dim); letter-spacing: .14em; text-transform: uppercase;
-}
-.zoom-controls { display: flex; gap: 5px; align-items: center; }
-.zoom-btn {
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); border-radius: 5px; cursor: pointer;
-  font-size: 13px; width: 26px; height: 26px;
-  display: flex; align-items: center; justify-content: center; transition: background .15s;
-}
-.zoom-btn:hover { background: var(--border); }
-.zoom-lbl { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--site-sub); width:36px; text-align:center; }
-.legend-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-.li { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--site-sub); }
-.li-pip { width:9px; height:9px; border-radius:2px; }
-.li-dia { width:9px; height:9px; background:var(--diamond-bg); border:1px solid var(--diamond-border); transform:rotate(45deg); }
-.li-line { width:18px; height:2px; }
-.sep2 { width:1px; height:14px; background:var(--site-border2); }
-
-/* ── FLOW CANVAS ── */
-.flow-viewport {
-  flex: 1; overflow: auto; cursor: grab; background: var(--bg);
-  min-height: 500px;
-}
-.flow-viewport:active { cursor: grabbing; }
-.flow-viewport::-webkit-scrollbar { width:6px; height:6px; }
-.flow-viewport::-webkit-scrollbar-track { background:var(--bg); }
-.flow-viewport::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-
-.canvas {
-  transform-origin: top left;
-  display: inline-block;
-  padding: 32px 40px 80px;
-  min-width: max-content;
-}
-
-/* ── FOOTER ── */
-footer {
-  position: relative; z-index: 1;
-  border-top: 1px solid var(--site-border);
-  padding: 14px 40px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(9,11,18,0.7);
-  flex-shrink: 0;
-}
-.footer-l { font-size:11px; color:var(--site-dim); }
-.footer-l strong { color:var(--site-sub); font-weight:500; }
-.footer-r { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--site-dim); letter-spacing:.08em; }
-
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* ════════ FLOW STYLES (from operation-flow.html) ════════ */
-.flow-root { display:flex; flex-direction:row; align-items:flex-start; gap:0; }
-.phase-wrap { display:flex; flex-direction:column; align-items:stretch; min-width:260px; }
-.phase-label {
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
-  padding:6px 12px; border-bottom:2px solid; margin-bottom:20px; white-space:nowrap;
-}
-.phase-is .phase-label { color:var(--is); border-color:var(--is); }
-.phase-fs .phase-label { color:var(--fs); border-color:var(--fs); }
-.phase-col { display:flex; flex-direction:column; align-items:center; gap:0; padding:0 14px; }
-.h-conn { display:flex; align-items:center; padding-top:120px; flex-shrink:0; }
-.arr-h { display:flex; align-items:center; }
-.arr-h-line { height:2px; }
-.arr-h-head { width:0; height:0; border-top:5px solid transparent; border-bottom:5px solid transparent; }
-.cs-fork { display:flex; flex-direction:column; align-items:stretch; }
-.cs-fork-label {
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px; font-weight:600; letter-spacing:.15em; text-transform:uppercase;
-  padding:6px 12px; margin-bottom:20px; border-bottom:2px solid var(--border); color:var(--text-sub);
-}
-.cs-branches { display:flex; flex-direction:row; align-items:flex-start; gap:0; }
-.branch-label {
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
-  padding:5px 14px; border-bottom:2px solid; margin-bottom:20px; white-space:nowrap; text-align:center;
-}
-.branch-label-mp { color:var(--mp); border-color:var(--mp); }
-.branch-label-vp { color:var(--vp); border-color:var(--vp); }
-.node {
-  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-  padding:9px 14px; border-radius:7px; border:1.5px solid var(--node-border); background:var(--node-bg);
-  font-size:12px; line-height:1.45; min-width:170px; max-width:230px; position:relative;
-  transition:border-color .2s, box-shadow .2s;
-}
-.node:hover { box-shadow:0 0 0 2px rgba(255,255,255,.06); }
-.node sub { font-size:10px; color:var(--text-sub); }
-.n-start { border-radius:999px; border-color:var(--is); background:rgba(34,197,94,.1); color:var(--is); font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; min-width:100px; }
-.n-end   { border-radius:999px; border-color:#475569; background:#151823; color:#64748b; font-weight:700; font-size:11px; min-width:100px; }
-.n-is  { border-color:var(--is-stroke);  background:var(--is-dim); }
-.n-fs  { border-color:var(--fs-stroke);  background:var(--fs-dim); }
-.n-mp  { border-color:var(--mp-stroke);  background:var(--mp-dim); }
-.n-vp  { border-color:var(--vp-stroke);  background:var(--vp-dim); }
-.n-warn { border-color:#f59e0b; background:rgba(245,158,11,.08); color:#fbbf24; font-size:11px; }
-.n-dead { border-color:#ef4444; background:rgba(239,68,68,.07); color:#f87171; font-size:11px; }
-.n-note { border:1px dashed rgba(226,200,110,.3); background:rgba(226,200,110,.05); color:#c9a84c; border-radius:6px; font-size:10.5px; padding:5px 10px; max-width:200px; text-align:center; }
-.diamond-outer { position:relative; display:flex; align-items:center; justify-content:center; width:130px; height:76px; flex-shrink:0; }
-.diamond-shape { position:absolute; width:96px; height:96px; background:var(--diamond-bg); border:1.5px solid var(--diamond-border); transform:rotate(45deg) scale(.72); border-radius:4px; transition:border-color .2s; }
-.diamond-outer:hover .diamond-shape { border-color:#f0d060; }
-.diamond-text { position:relative; z-index:2; font-size:11px; font-weight:500; color:#f0d060; text-align:center; line-height:1.3; padding:0 4px; pointer-events:none; }
-.arr { display:flex; flex-direction:column; align-items:center; position:relative; flex-shrink:0; }
-.arr-line { width:2px; background:var(--neutral); }
-.arr-head { width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:7px solid var(--neutral); }
-.arr.yes .arr-line { background:var(--yes); } .arr.yes .arr-head { border-top-color:var(--yes); }
-.arr.no  .arr-line { background:var(--no);  } .arr.no  .arr-head { border-top-color:var(--no);  }
-.arr.mp  .arr-line { background:var(--mp);  } .arr.mp  .arr-head { border-top-color:var(--mp);  }
-.arr.vp  .arr-line { background:var(--vp);  } .arr.vp  .arr-head { border-top-color:var(--vp);  }
-.arr.fs  .arr-line { background:var(--fs);  } .arr.fs  .arr-head { border-top-color:var(--fs);  }
-.branch-row { display:flex; flex-direction:row; align-items:flex-start; gap:10px; position:relative; }
-.branch-col { display:flex; flex-direction:column; align-items:center; gap:0; }
-.branch-tag { font-size:10px; font-family:'IBM Plex Mono',monospace; margin-bottom:2px; }
-.branch-tag.yes { color:var(--yes); } .branch-tag.no { color:var(--no); }
-.vp-plan { border:1.5px solid var(--vp-stroke); border-radius:8px; padding:12px 14px; background:var(--vp-dim); min-width:200px; max-width:240px; }
-.vp-plan-title { font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600; color:var(--vp); letter-spacing:.1em; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--vp-stroke); }
-.vp-step { display:flex; align-items:flex-start; gap:7px; font-size:11px; line-height:1.4; margin-bottom:2px; }
-.vp-dot { flex-shrink:0; margin-top:1px; width:18px; height:18px; border-radius:50%; border:1px solid var(--vp); background:rgba(168,85,247,.15); display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--vp); font-family:'IBM Plex Mono',monospace; }
-.vp-down { font-size:10px; color:var(--text-sub); margin:2px 0 2px 25px; }
-.vp-sub  { font-size:10px; color:var(--text-sub); margin-left:25px; line-height:1.6; }
-.price-box { border:1px solid rgba(249,115,22,.3); background:rgba(249,115,22,.07); border-radius:6px; padding:7px 11px; font-size:11px; color:#fdba74; line-height:1.7; max-width:210px; text-align:left; }
-.price-box strong { display:block; font-size:10px; color:var(--fs); margin-bottom:3px; }
-.hint { position:fixed; bottom:14px; right:16px; background:rgba(19,21,31,.92); border:1px solid var(--border); border-radius:7px; padding:7px 12px; font-size:11px; color:var(--text-sub); backdrop-filter:blur(8px); pointer-events:none; z-index:300; }
+/* price box */
+.price-box{border:1px solid rgba(249,115,22,.3);background:rgba(249,115,22,.07);border-radius:6px;padding:7px 10px;font-size:11px;color:#fdba74;line-height:1.7;text-align:left;}
+.price-box strong{display:block;font-size:10px;color:var(--fs);margin-bottom:2px;}
 </style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
 <header>
   <div class="logo">
     <div class="logo-mark">a</div>
-    <div>
-      <div class="logo-name">apra Inc.</div>
-      <div class="logo-jp">株式会社アプラ</div>
-    </div>
+    <div><div class="logo-name">apra Inc.</div><div class="logo-jp">株式会社アプラ</div></div>
   </div>
   <div class="header-badge"><div class="badge-dot"></div>社内限定</div>
 </header>
 
-<!-- ── HERO ── -->
 <section class="hero">
   <div class="hero-tag">Internal Docs</div>
   <h1>全社<em>オペレーション</em>フロー</h1>
-  <p class="hero-desc">IS（インサイドセールス）からFS（フィールドセールス）、CS（カスタマーサクセス）までの一気通貫フローです。各フェーズの判断基準・分岐・担当を確認できます。</p>
+  <p class="hero-desc">IS → FS → CS（MP / VP）の一気通貫フローです。</p>
   <div class="phase-row">
-    <div class="pb pb-is"><div class="pb-dot"></div>Phase 1 — IS</div>
-    <div class="pb-sep">→</div>
-    <div class="pb pb-fs"><div class="pb-dot"></div>Phase 2 — FS</div>
-    <div class="pb-sep">→</div>
-    <div class="pb pb-mp"><div class="pb-dot"></div>Phase 3-A — MP</div>
-    <div class="pb-sep">/</div>
+    <div class="pb pb-is"><div class="pb-dot"></div>Phase 1 — IS</div><div class="pb-sep">→</div>
+    <div class="pb pb-fs"><div class="pb-dot"></div>Phase 2 — FS</div><div class="pb-sep">→</div>
+    <div class="pb pb-mp"><div class="pb-dot"></div>Phase 3-A — MP</div><div class="pb-sep">/</div>
     <div class="pb pb-vp"><div class="pb-dot"></div>Phase 3-B — VP</div>
   </div>
 </section>
 
-<!-- ── FLOW SECTION ── -->
 <section class="flow-section">
   <div class="flow-toolbar">
     <div class="legend-row">
@@ -325,387 +151,602 @@ footer {
 
   <div class="flow-viewport" id="fvp">
   <div class="canvas" id="cv">
-  <div class="flow-root">
 
-  <!-- IS -->
-  <div class="phase-wrap phase-is" style="min-width:270px">
-    <div class="phase-label">Phase 1 — IS（インサイドセールス）</div>
-    <div class="phase-col">
-      <div class="node n-start">▶ START</div>
-      <div class="arr yes"><div class="arr-line" style="height:14px"></div><div class="arr-head"></div></div>
-      <div class="node n-is">📋 LP応募フォーム<br><sub>氏名・電話・性別・メアド・職業・未婚/既婚</sub></div>
-      <div class="arr"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="node n-is" style="font-size:11px">kintone 自動登録<br><sub>サンクスページ到達をトリガー</sub></div>
-      <div class="arr"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">LINE登録<br>完了した？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node" style="max-width:120px;font-size:11px">氏名&電話番号<br>返信あり？</div>
-          <div class="arr no"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-dead" style="max-width:120px">「応募が<br>完了していません」</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-is" style="max-width:120px">＋属性タグ付与</div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="node n-is">☎ 架電 x1 ※1次案内<br><sub>当日中 17:00</sub></div>
-      <div class="arr"><div class="arr-line" style="height:6px"></div><div class="arr-head"></div></div>
-      <div class="node n-note">連絡取れない場合：<br>x2(翌日午後)→x3→x4<br>→状況お伺いx1〜x4→架電x5→放置</div>
-      <div class="arr"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-      <div class="node n-is">📞 TEL時間指定</div>
-      <div class="arr"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">音声提出<br>あった？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node" style="max-width:120px;font-size:11px">「確認します」<br>or「預かります」</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="diamond-outer" style="width:110px;height:64px"><div class="diamond-shape"></div><div class="diamond-text" style="font-size:10px">データOK?<br>PコメOK?</div></div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="node n-is" style="border-color:var(--yes);font-weight:700">✅ 合格通知（5日後）</div>
-      <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="node n-is">時間指定</div>
-      <div class="arr"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">返信<br>あった？</div></div>
-      <div class="arr yes"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-      <div class="node n-is">☎ 架電 ※2次案内</div>
-      <div class="arr"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">日程確定<br>した？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-dead" style="max-width:120px;font-size:11px">未決着タグ<br>リスケ追いかけ</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-is" style="max-width:120px;font-size:11px">リマインド<br>3日前・前日</div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">ボタン<br>押下された？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node" style="max-width:110px;font-size:11px">状況お伺い</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="diamond-outer" style="width:100px;height:56px"><div class="diamond-shape"></div><div class="diamond-text" style="font-size:10px">SP？</div></div>
-          <div class="arr yes"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-is" style="max-width:110px;font-size:11px">2次面談</div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:12px"></div><div class="arr-head"></div></div>
-      <div class="node" style="border-color:var(--fs);color:var(--fs);font-size:11px;font-weight:700">→ FS フェーズへ ▶</div>
-    </div>
+  <!-- ═══ IS SVG ═══ -->
+  <div class="phase-col-wrap">
+    <div class="phase-lbl phase-lbl-is">Phase 1 — IS（インサイドセールス）</div>
+    <svg id="svg-is" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;font-family:'Noto Sans JP',sans-serif;"></svg>
   </div>
 
-  <!-- H IS→FS -->
-  <div class="h-conn" style="padding-top:110px">
-    <div class="arr-h" style="width:36px">
-      <div class="arr-h-line" style="width:36px;background:var(--fs)"></div>
-      <div class="arr-h-head" style="border-left:8px solid var(--fs);border-top:5px solid transparent;border-bottom:5px solid transparent"></div>
-    </div>
+  <!-- h-conn IS→FS -->
+  <div class="h-conn" id="hconn-is-fs" style="padding-top:120px">
+    <svg width="44" height="2" style="overflow:visible">
+      <line x1="0" y1="1" x2="36" y2="1" stroke="#f97316" stroke-width="2"/>
+      <polygon points="36,1 28,-4 28,6" fill="#f97316"/>
+    </svg>
   </div>
 
-  <!-- FS -->
-  <div class="phase-wrap phase-fs" style="min-width:290px">
-    <div class="phase-label">Phase 2 — FS（フィールドセールス）</div>
-    <div class="phase-col">
-      <div class="node n-fs" style="font-weight:700">🤝 面談</div>
-      <div class="arr"><div class="arr-line" style="height:12px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">合格？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-dead" style="max-width:130px;font-size:11px">不合格通知<br>or ダウンセル打診</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-fs" style="max-width:130px">🚀 ロケット<br><sub>約3日</sub></div>
-          <div class="arr fs"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-fs" style="max-width:130px">📞 CB<br><sub>即日〜</sub></div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">辞退意向<br>あり？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-dead" style="max-width:120px;font-size:11px">辞退処理<br>or 掘り起こし</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">契約日<br>確定？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag no">NO</div>
-          <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-note" style="max-width:120px">当週で打診<br>ダウンセルも打診</div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="diamond-outer" style="width:120px;height:60px"><div class="diamond-shape"></div><div class="diamond-text" style="font-size:10px">契約前<br>辞退？</div></div>
-          <div class="arr no"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-dead" style="max-width:120px;font-size:11px">ディレ対応<br>→再契約 or 辞退</div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:12px"></div><div class="arr-head"></div></div>
-      <div class="node n-fs" style="font-weight:700">📝 契約</div>
-      <div class="arr fs"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">信販？</div></div>
-      <div class="branch-row" style="margin:6px 0">
-        <div class="branch-col">
-          <div class="branch-tag yes">YES</div>
-          <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="diamond-outer" style="width:110px;height:56px"><div class="diamond-shape"></div><div class="diamond-text" style="font-size:10px">承認？</div></div>
-          <div class="branch-row" style="margin:4px 0;gap:6px">
-            <div class="branch-col">
-              <div class="branch-tag no">NO</div>
-              <div class="arr no"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-              <div class="node n-warn" style="max-width:88px">RM対応</div>
-            </div>
-            <div class="branch-col">
-              <div class="branch-tag yes">YES</div>
-              <div class="arr yes"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-              <div class="node n-fs" style="max-width:88px;font-size:11px">決済次第<br>進行開始</div>
-            </div>
-          </div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-tag no" style="color:var(--text-sub)">NO（現金）</div>
-          <div class="arr"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-fs" style="max-width:110px;font-size:11px">1回目¥40万〜<br>→ 進行開始</div>
-        </div>
-      </div>
-      <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-      <div class="price-box"><strong>💰 料金メモ</strong>自社ローン：頭金¥25万〜<br>MP+プラン：入会金¥1.8万 / 月額¥1,280<br>現金：1回目¥40万〜</div>
-      <div class="arr yes"><div class="arr-line" style="height:12px"></div><div class="arr-head"></div></div>
-      <div class="diamond-outer" style="width:160px;height:90px">
-        <div class="diamond-shape" style="width:116px;height:116px;border-color:#f97316;border-width:2.5px"></div>
-        <div class="diamond-text" style="font-size:13px;font-weight:700;color:#fb923c">商品<br>MP / VP</div>
-      </div>
-      <div style="display:flex;gap:52px;margin-top:8px;align-items:flex-start">
-        <div style="display:flex;flex-direction:column;align-items:center">
-          <span style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--mp);font-weight:700">MP</span>
-          <div class="arr mp"><div class="arr-line" style="height:16px"></div><div class="arr-head"></div></div>
-          <div class="node" style="border-color:var(--mp);color:var(--mp);font-size:11px;font-weight:700;min-width:80px">→ MP 楽曲制作</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center">
-          <span style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--vp);font-weight:700">VP</span>
-          <div class="arr vp"><div class="arr-line" style="height:16px"></div><div class="arr-head"></div></div>
-          <div class="node" style="border-color:var(--vp);color:var(--vp);font-size:11px;font-weight:700;min-width:80px">→ VP 提供</div>
-        </div>
-      </div>
-    </div>
+  <!-- ═══ FS SVG ═══ -->
+  <div class="phase-col-wrap">
+    <div class="phase-lbl phase-lbl-fs">Phase 2 — FS（フィールドセールス）</div>
+    <svg id="svg-fs" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;font-family:'Noto Sans JP',sans-serif;"></svg>
   </div>
 
-  <!-- H FS→CS -->
-  <div class="h-conn" style="padding-top:110px">
-    <div class="arr-h" style="width:36px">
-      <div class="arr-h-line" style="width:36px;background:var(--neutral)"></div>
-      <div class="arr-h-head" style="border-left:8px solid var(--neutral);border-top:5px solid transparent;border-bottom:5px solid transparent"></div>
-    </div>
+  <!-- h-conn FS→CS -->
+  <div class="h-conn" id="hconn-fs-cs" style="padding-top:120px">
+    <svg width="44" height="2" style="overflow:visible">
+      <line x1="0" y1="1" x2="36" y2="1" stroke="#94a3b8" stroke-width="2"/>
+      <polygon points="36,1 28,-4 28,6" fill="#94a3b8"/>
+    </svg>
   </div>
 
-  <!-- CS FORK -->
-  <div class="cs-fork">
-    <div class="cs-fork-label">Phase 3 — CS（カスタマーサクセス）</div>
+  <!-- ═══ CS ═══ -->
+  <div class="cs-wrap">
+    <div class="phase-lbl phase-lbl-cs" style="margin-bottom:0">Phase 3 — CS（カスタマーサクセス）</div>
     <div class="cs-branches">
 
-      <!-- MP -->
-      <div style="min-width:280px;border-right:1px solid var(--border)">
-        <div class="branch-label branch-label-mp">3-A ▸ MP 楽曲制作</div>
-        <div class="phase-col">
-          <div class="node n-mp" style="font-weight:700">📄 発注書作成（MP A&amp;R）</div>
-          <div class="arr mp"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp" style="font-size:11px">システム：発注情報登録<br><sub>発注書アップロード確認</sub></div>
-          <div class="arr mp"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp">📦 パートナーへ発注</div>
-          <div class="arr"><div class="arr-line" style="height:4px"></div><div class="arr-head"></div></div>
-          <div class="node n-note">制作期間：約1ヶ月</div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp">🎵 初稿納品（パートナー）</div>
-          <div class="arr"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">修正あり？</div></div>
-          <div class="branch-row" style="margin:6px 0">
-            <div class="branch-col">
-              <div class="branch-tag yes">YES</div>
-              <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-              <div class="node n-mp" style="font-size:11px;max-width:130px">修正内容確認<br>→修正依頼書作成</div>
-              <div class="arr yes"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-              <div class="node n-mp" style="font-size:11px;max-width:130px">パートナー：<br>修正作業→修正納品</div>
-              <div class="arr"><div class="arr-line" style="height:4px"></div><div class="arr-head"></div></div>
-              <div class="node n-note" style="font-size:10px">※修正あれば繰り返し</div>
-            </div>
-            <div class="branch-col">
-              <div class="branch-tag no">NO</div>
-              <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-            </div>
-          </div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp">✅ 検収</div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp" style="font-weight:700">🔒 FIX受領</div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp" style="font-size:11px">デモ音源FIX処理<br>ボイトレ促し</div>
-          <div class="arr"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-          <div class="diamond-outer"><div class="diamond-shape"></div><div class="diamond-text">キー変更<br>あり？</div></div>
-          <div class="branch-row" style="margin:6px 0">
-            <div class="branch-col">
-              <div class="branch-tag yes">YES</div>
-              <div class="arr yes"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-              <div class="node n-mp" style="font-size:11px;max-width:130px">キー変更依頼<br>→変更作業<br>→最終キー納品</div>
-            </div>
-            <div class="branch-col">
-              <div class="branch-tag no">NO</div>
-              <div class="arr no"><div class="arr-line" style="height:10px"></div><div class="arr-head"></div></div>
-            </div>
-          </div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp">🎧 最終キー音源確認</div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp">📂 パラデータ依頼・納品</div>
-          <div class="arr mp"><div class="arr-line" style="height:8px"></div><div class="arr-head"></div></div>
-          <div class="node n-mp">💴 請求依頼 → 請求処理</div>
-          <div class="arr mp"><div class="arr-line" style="height:12px"></div><div class="arr-head"></div></div>
-          <div class="node n-end">🏁 完了<br><sub>以降データ保存義務なし</sub></div>
-        </div>
+      <!-- MP branch -->
+      <div class="cs-branch" style="border-right:1px solid var(--border)">
+        <div class="cs-branch-lbl cs-branch-lbl-mp">3-A ▸ MP</div>
+        <svg id="svg-mp" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;font-family:'Noto Sans JP',sans-serif;"></svg>
       </div>
 
-      <!-- VP -->
-      <div style="min-width:340px">
-        <div class="branch-label branch-label-vp">3-B ▸ VP ボイスプロデュース</div>
-        <div class="phase-col" style="align-items:center">
-          <div class="diamond-outer" style="width:150px;height:82px">
-            <div class="diamond-shape" style="border-color:var(--vp);border-width:2px"></div>
-            <div class="diamond-text" style="color:var(--vp)">プラン選択</div>
-          </div>
-          <div style="display:flex;gap:16px;margin-top:10px;align-items:flex-start">
-            <div style="display:flex;flex-direction:column;align-items:center">
-              <div class="arr vp"><div class="arr-line" style="height:16px"></div><div class="arr-head"></div></div>
-              <div class="vp-plan">
-                <div class="vp-plan-title">🎤 VP通常プラン</div>
-                <div class="vp-step"><div class="vp-dot">O</div>オリエン面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎙</div>ボイトレ ×6回</div>
-                <div class="vp-sub">基礎練×2→ボイサン練習×2<br>→掛け合い練習×2</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">📸</div>宣材撮影</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎵</div>VS収録</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎭</div>ボイスドラマ収録</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">P</div>P面談</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">S</div>S面談</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">D</div>D面談</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">L</div>L面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🏁</div>アフターへ</div>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center">
-              <div class="arr vp"><div class="arr-line" style="height:16px"></div><div class="arr-head"></div></div>
-              <div class="vp-plan">
-                <div class="vp-plan-title">🎤 VPCプラン</div>
-                <div class="vp-step"><div class="vp-dot">O</div>オリエン面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">C</div>キャラ制作面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎙</div>ボイトレ ×4回</div>
-                <div class="vp-sub">基礎練×2→掛け合い練習×2</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🤝</div>ドラマ前顔合わせ</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎭</div>ボイスドラマ収録</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">D</div>D面談</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">L</div>L面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🏁</div>アフターへ</div>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center">
-              <div class="arr vp"><div class="arr-line" style="height:16px"></div><div class="arr-head"></div></div>
-              <div class="vp-plan">
-                <div class="vp-plan-title">🎤 VPCボイサン変更</div>
-                <div class="vp-step"><div class="vp-dot">O</div>オリエン面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">C</div>キャラクター面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎙</div>ボイトレ ×4回</div>
-                <div class="vp-sub">基礎練×2→ボイサン練習×2</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🎵</div>VS収録</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">S</div>S面談</div>
-                <div class="vp-step" style="font-size:10px"><div class="vp-dot" style="font-size:8px">L</div>L面談</div>
-                <div class="vp-down">↓</div>
-                <div class="vp-step"><div class="vp-dot">🏁</div>アフターへ</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- VP branch -->
+      <div class="cs-branch">
+        <div class="cs-branch-lbl cs-branch-lbl-vp">3-B ▸ VP</div>
+        <svg id="svg-vp" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;font-family:'Noto Sans JP',sans-serif;"></svg>
       </div>
 
     </div>
   </div>
 
-  </div></div></div><!-- flow-root / canvas / viewport -->
+  </div><!-- /canvas -->
+  </div><!-- /viewport -->
 </section>
 
-<!-- ── FOOTER ── -->
 <footer>
   <div class="footer-l"><strong>株式会社アプラ / apra Inc.</strong> — 社内限定ドキュメント</div>
   <div class="footer-r">INTERNAL USE ONLY</div>
 </footer>
-
 <div class="hint">🖱 ドラッグでスクロール｜Ctrl+スクロール or ± でズーム</div>
 
 <script>
-  let scale = 1;
-  const cv  = document.getElementById('cv');
-  const fvp = document.getElementById('fvp');
-  const lbl = document.getElementById('zlbl');
-  function z(d) {
-    scale = Math.min(2.5, Math.max(0.25, scale + d));
-    cv.style.transform = `scale(${scale})`;
-    cv.style.marginBottom = `${Math.max(0,(scale-1)*cv.offsetHeight)}px`;
-    cv.style.marginRight  = `${Math.max(0,(scale-1)*cv.offsetWidth)}px`;
-    lbl.textContent = Math.round(scale*100)+'%';
+// ─── SVG helpers ───────────────────────────────────────────────────────────
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const C = {
+  is:'#22c55e', fs:'#f97316', mp:'#3b82f6', vp:'#a855f7',
+  yes:'#22c55e', no:'#ef4444', neutral:'#94a3b8',
+  nodeBg:'#1a1d2e', nodeBorder:'#2e3348',
+  dBg:'#1e2135', dBorder:'#e2c86e', dText:'#f0d060',
+  text:'#e2e8f0', textSub:'#94a3b8',
+  warn:'#f59e0b', warnBg:'rgba(245,158,11,0.08)',
+  dead:'#ef4444', deadBg:'rgba(239,68,68,0.07)',
+  noteBorder:'rgba(226,200,110,0.3)', noteBg:'rgba(226,200,110,0.05)', noteText:'#c9a84c',
+};
+
+function el(tag, attrs={}) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  return e;
+}
+
+// Rounded rect node
+function node(svg, x, y, w, h, label, color, bgColor, borderColor, r=7, fontSize=12, fontWeight='normal') {
+  const g = el('g');
+  const rect = el('rect',{x,y,width:w,height:h,rx:r,ry:r,fill:bgColor,stroke:borderColor,'stroke-width':1.5});
+  g.appendChild(rect);
+  // split label on <br>
+  const lines = label.split('\n');
+  const lineH = fontSize * 1.4;
+  const totalH = lines.length * lineH;
+  lines.forEach((ln,i)=>{
+    // sub lines (smaller)
+    const isSub = ln.startsWith('~');
+    const txt = el('text',{
+      x: x+w/2, y: y+(h-totalH)/2 + i*lineH + (isSub?fontSize*0.85:fontSize),
+      'text-anchor':'middle','dominant-baseline':'auto',
+      fill: isSub ? C.textSub : color,
+      'font-size': isSub ? fontSize*0.82 : fontSize,
+      'font-weight': fontWeight,
+      'font-family':"'Noto Sans JP', sans-serif"
+    });
+    txt.textContent = isSub ? ln.slice(1) : ln;
+    g.appendChild(txt);
+  });
+  svg.appendChild(g);
+  return {cx:x+w/2, top:y, bottom:y+h, left:x, right:x+w, w, h};
+}
+
+function nodeStart(svg,x,y,w,h,label,color){
+  const g=el('g');
+  g.appendChild(el('rect',{x,y,width:w,height:h,rx:h/2,ry:h/2,fill:`rgba(${hexToRgb(color)},0.1)`,stroke:color,'stroke-width':1.5}));
+  const t=el('text',{x:x+w/2,y:y+h/2,'text-anchor':'middle','dominant-baseline':'middle',fill:color,'font-size':11,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});
+  t.textContent=label; g.appendChild(t); svg.appendChild(g);
+  return {cx:x+w/2,top:y,bottom:y+h,left:x,right:x+w,w,h};
+}
+function nodeEnd(svg,x,y,w,h,label){
+  const g=el('g');
+  g.appendChild(el('rect',{x,y,width:w,height:h,rx:h/2,ry:h/2,fill:'#151823',stroke:'#475569','stroke-width':1.5}));
+  const t=el('text',{x:x+w/2,y:y+h/2,'text-anchor':'middle','dominant-baseline':'middle',fill:'#64748b','font-size':11,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"});
+  t.textContent=label; g.appendChild(t); svg.appendChild(g);
+  return {cx:x+w/2,top:y,bottom:y+h,left:x,right:x+w,w,h};
+}
+
+// Hexagon color to rgb
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+// diamond
+function diamond(svg,cx,cy,hw,hh,label,color=C.dText,borderColor=C.dBorder){
+  const pts=`${cx},${cy-hh} ${cx+hw},${cy} ${cx},${cy+hh} ${cx-hw},${cy}`;
+  svg.appendChild(el('polygon',{points:pts,fill:C.dBg,stroke:borderColor,'stroke-width':1.5}));
+  const lines=label.split('\n');
+  lines.forEach((ln,i)=>{
+    const t=el('text',{x:cx,y:cy+(i-(lines.length-1)/2)*14,'text-anchor':'middle','dominant-baseline':'middle',fill:color,'font-size':11,'font-weight':500,'font-family':"'Noto Sans JP',sans-serif"});
+    t.textContent=ln; svg.appendChild(t);
+  });
+  return {cx,top:cy-hh,bottom:cy+hh,left:cx-hw,right:cx+hw,cy};
+}
+
+// vertical arrow  from (x,y1) to (x,y2)
+function varrow(svg,x,y1,y2,color,label='',labelSide='right'){
+  const g=el('g');
+  g.appendChild(el('line',{x1:x,y1,x2:x,y2:y2-7,stroke:color,'stroke-width':2}));
+  g.appendChild(el('polygon',{points:`${x},${y2} ${x-5},${y2-8} ${x+5},${y2-8}`,fill:color}));
+  if(label){
+    const t=el('text',{x:labelSide==='right'?x+6:x-6,y:(y1+y2)/2,'dominant-baseline':'middle',fill:color,'font-size':10,'font-family':"'IBM Plex Mono',monospace",'text-anchor':labelSide==='right'?'start':'end'});
+    t.textContent=label; g.appendChild(t);
   }
-  function zr() { scale=1; cv.style.transform=''; cv.style.marginBottom=''; cv.style.marginRight=''; lbl.textContent='100%'; }
-  fvp.addEventListener('wheel', e => {
-    if (e.ctrlKey||e.metaKey) { e.preventDefault(); z(e.deltaY<0?0.05:-0.05); }
-  }, {passive:false});
-  let drag=false,ox,oy,sl,st;
-  fvp.addEventListener('mousedown', e=>{drag=true;ox=e.pageX;oy=e.pageY;sl=fvp.scrollLeft;st=fvp.scrollTop;});
-  window.addEventListener('mouseup',()=>drag=false);
-  window.addEventListener('mousemove',e=>{if(!drag)return;fvp.scrollLeft=sl-(e.pageX-ox);fvp.scrollTop=st-(e.pageY-oy);});
+  svg.appendChild(g);
+}
+
+// angled arrow from (x1,y1) to (x2,y2) with elbow
+// goes down from (x1,y1) to elbow_y, then horizontal to x2, then down to (x2,y2)
+function elbow(svg,x1,y1,x2,y2,elbowY,color,label=''){
+  const g=el('g');
+  // vertical down
+  g.appendChild(el('line',{x1,y1,x2:x1,y2:elbowY,stroke:color,'stroke-width':2}));
+  // horizontal
+  const dir=x2>x1?1:-1;
+  g.appendChild(el('line',{x1,y1:elbowY,x2,y2:elbowY,stroke:color,'stroke-width':2}));
+  // vertical down to target
+  g.appendChild(el('line',{x1:x2,y1:elbowY,x2,y2:y2-7,stroke:color,'stroke-width':2}));
+  g.appendChild(el('polygon',{points:`${x2},${y2} ${x2-5},${y2-8} ${x2+5},${y2-8}`,fill:color}));
+  if(label){
+    const t=el('text',{x:x2+6,y:elbowY-6,'dominant-baseline':'middle',fill:color,'font-size':10,'font-family':"'IBM Plex Mono',monospace"});
+    t.textContent=label; g.appendChild(t);
+  }
+  svg.appendChild(g);
+}
+
+// straight horizontal arrow
+function harrow(svg,x1,y,x2,color){
+  const g=el('g');
+  g.appendChild(el('line',{x1,y1:y,x2:x2-7,y2:y,stroke:color,'stroke-width':2}));
+  g.appendChild(el('polygon',{points:`${x2},${y} ${x2-8},${y-5} ${x2-8},${y+5}`,fill:color}));
+  svg.appendChild(g);
+}
+
+// note box (dashed)
+function noteBox(svg,x,y,w,h,lines){
+  svg.appendChild(el('rect',{x,y,width:w,height:h,rx:6,fill:C.noteBg,stroke:C.noteBorder,'stroke-width':1,'stroke-dasharray':'4,3'}));
+  lines.forEach((ln,i)=>{
+    const t=el('text',{x:x+w/2,y:y+14+i*14,'text-anchor':'middle',fill:C.noteText,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"});
+    t.textContent=ln; svg.appendChild(t);
+  });
+  return {cx:x+w/2,top:y,bottom:y+h,left:x,right:x+w,w,h};
+}
+
+function priceBox(svg,x,y,w){
+  const lines=['💰 料金メモ','自社ローン：頭金¥25万〜','MP+プラン：¥1.8万/月額¥1,280','現金：1回目¥40万〜','クレカ：要確認'];
+  const h=lines.length*16+12;
+  svg.appendChild(el('rect',{x,y,width:w,height:h,rx:6,fill:'rgba(249,115,22,0.07)',stroke:'rgba(249,115,22,0.3)','stroke-width':1}));
+  lines.forEach((ln,i)=>{
+    const t=el('text',{x:x+8,y:y+14+i*16,fill:i===0?C.fs:'#fdba74','font-size':i===0?10:11,'font-weight':i===0?700:'normal','font-family':"'Noto Sans JP',sans-serif"});
+    t.textContent=ln; svg.appendChild(t);
+  });
+  return {top:y,bottom:y+h,left:x,right:x+w,cx:x+w/2,h,w};
+}
+
+// ─── Build IS diagram ───────────────────────────────────────────────────────
+function buildIS(svg){
+  const W=280, PAD=20;
+  const NW=220, NH=44, cx=W/2;
+  let y=20;
+
+  const start=nodeStart(svg,cx-70,y,140,34,'▶ START',C.is); y+=34;
+  varrow(svg,cx,y,y+18,C.is); y+=18;
+
+  const n1=node(svg,cx-NW/2,y,NW,NH,'LP応募フォーム\n~氏名・電話・性別・メアド・職業・未婚/既婚',C.text,C.is.replace('#','').length>0?`rgba(34,197,94,0.12)`:'',C.is+'80',7,12); y+=NH;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const n2=node(svg,cx-NW/2,y,NW,NH,'kintone 自動登録\n~サンクスページ到達をトリガー',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',7,12); y+=NH;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  // diamond LINE登録
+  const d1=diamond(svg,cx,y+36,58,36,'LINE登録\n完了した？'); y+=72;
+
+  // branches from diamond
+  const brGap=16, leftCX=cx-70, rightCX=cx+70;
+  // NO line from left tip → down
+  const noY1=d1.cy, noStartX=d1.left;
+  // YES line from right tip → down
+  const yesStartX=d1.right;
+
+  // NO branch
+  const noBranchTopY=y+8;
+  elbow(svg,noStartX,d1.cy,leftCX,noBranchTopY,d1.cy,C.no,'NO');
+  const nd1=node(svg,leftCX-55,noBranchTopY,110,40,'氏名&電話番号\n返信あり？',C.text,C.nodeBg,C.nodeBorder,6,11); 
+  varrow(svg,leftCX,noBranchTopY+40,noBranchTopY+62,C.no);
+  const nd2=node(svg,leftCX-55,noBranchTopY+62,110,38,'「応募が\n完了していません」','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+
+  // YES branch  
+  elbow(svg,yesStartX,d1.cy,rightCX,noBranchTopY,d1.cy,C.yes,'YES');
+  const yd1=node(svg,rightCX-55,noBranchTopY,110,38,'＋属性タグ付与',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',6,12);
+
+  // resume main flow after branches
+  y = noBranchTopY + 62 + 38 + 16;
+  // connect YES branch bottom down to main
+  varrow(svg,rightCX,noBranchTopY+38,y,C.yes);
+  varrow(svg,leftCX,noBranchTopY+100,y,C.no);
+  // horizontal join line at y
+  svg.appendChild(el('line',{x1:leftCX,y1:y,x2:rightCX,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const n3=node(svg,cx-NW/2,y,NW,40,'☎ 架電 x1 ※1次案内\n~当日中 17:00',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',7,12); y+=40;
+  varrow(svg,cx,y,y+10,C.neutral); y+=10;
+  const note1=noteBox(svg,cx-100,y,200,44,['連絡取れない場合：','x2→x3→x4→状況お伺いx1〜x4→放置']); y+=44;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const n4=node(svg,cx-NW/2,y,NW,38,'📞 TEL時間指定',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',7,12); y+=38;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  // diamond 音声提出
+  const d2=diamond(svg,cx,y+36,58,36,'音声提出\nあった？'); y+=72;
+
+  const b2TopY=y+8;
+  const b2LC=cx-72, b2RC=cx+72;
+  elbow(svg,d2.left,d2.cy,b2LC,b2TopY,d2.cy,C.no,'NO');
+  node(svg,b2LC-55,b2TopY,110,38,'「確認します」\nor「預かります」',C.text,C.nodeBg,C.nodeBorder,6,11);
+  elbow(svg,d2.right,d2.cy,b2RC,b2TopY,d2.cy,C.yes,'YES');
+  // sub diamond
+  const sd=diamond(svg,b2RC,b2TopY+52,50,30,'データOK?\nPコメOK?',C.dText,C.dBorder);
+
+  y=b2TopY+52+30+16;
+  varrow(svg,b2RC,b2TopY+52+30,y,C.yes);
+  varrow(svg,b2LC,b2TopY+38,y,C.neutral);
+  svg.appendChild(el('line',{x1:b2LC,y1:y,x2:b2RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+14,C.yes); y+=14;
+
+  const n5=node(svg,cx-NW/2,y,NW,38,'✅ 合格通知（5日後）',C.yes,'rgba(34,197,94,0.1)',C.yes,7,12,'bold'); y+=38;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const n6=node(svg,cx-NW/2,y,NW,38,'時間指定',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',7,12); y+=38;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const d3=diamond(svg,cx,y+36,58,36,'返信\nあった？'); y+=72;
+  varrow(svg,cx,y,y+14,C.yes); y+=14;
+
+  const n7=node(svg,cx-NW/2,y,NW,38,'☎ 架電 ※2次案内',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',7,12); y+=38;
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const d4=diamond(svg,cx,y+36,58,36,'日程確定\nした？'); y+=72;
+
+  const b4TopY=y+8;
+  const b4LC=cx-72, b4RC=cx+72;
+  elbow(svg,d4.left,d4.cy,b4LC,b4TopY,d4.cy,C.no,'NO');
+  node(svg,b4LC-55,b4TopY,110,38,'未決着タグ\nリスケ追いかけ','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  elbow(svg,d4.right,d4.cy,b4RC,b4TopY,d4.cy,C.yes,'YES');
+  node(svg,b4RC-55,b4TopY,110,38,'リマインド\n3日前・前日',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',6,11);
+
+  y=b4TopY+38+16;
+  varrow(svg,b4RC,b4TopY+38,y,C.yes);
+  varrow(svg,b4LC,b4TopY+38,y,C.no);
+  svg.appendChild(el('line',{x1:b4LC,y1:y,x2:b4RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  const d5=diamond(svg,cx,y+36,62,36,'ボタン\n押下された？'); y+=72;
+
+  const b5TopY=y+8;
+  const b5LC=cx-76, b5RC=cx+76;
+  elbow(svg,d5.left,d5.cy,b5LC,b5TopY,d5.cy,C.no,'NO');
+  node(svg,b5LC-50,b5TopY,100,38,'状況お伺い',C.text,C.nodeBg,C.nodeBorder,6,11);
+  elbow(svg,d5.right,d5.cy,b5RC,b5TopY,d5.cy,C.yes,'YES');
+  const sdSP=diamond(svg,b5RC,b5TopY+46,38,28,'SP？');
+  varrow(svg,b5RC,b5TopY+46+28,b5TopY+46+28+14,C.yes);
+  node(svg,b5RC-50,b5TopY+46+28+14,100,38,'2次面談',C.text,'rgba(34,197,94,0.12)','rgba(34,197,94,0.5)',6,11);
+
+  y=b5TopY+46+28+14+38+16;
+  varrow(svg,b5RC,b5TopY+46+28+14+38,y,C.yes);
+  varrow(svg,b5LC,b5TopY+38,y,C.no);
+  svg.appendChild(el('line',{x1:b5LC,y1:y,x2:b5RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+14,C.is); y+=14;
+
+  node(svg,cx-NW/2,y,NW,38,'→ FS フェーズへ ▶',C.fs,'rgba(249,115,22,0.06)','rgba(249,115,22,0.5)',7,11,'bold');
+  y+=38+20;
+
+  svg.setAttribute('width',W);
+  svg.setAttribute('height',y);
+  // update h-conn padding
+  document.getElementById('hconn-is-fs').style.paddingTop = '120px';
+}
+
+// ─── Build FS diagram ───────────────────────────────────────────────────────
+function buildFS(svg){
+  const W=340, cx=W/2;
+  const NW=230, NH=44;
+  let y=20;
+
+  const n0=node(svg,cx-NW/2,y,NW,NH,'🤝 面談',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
+  varrow(svg,cx,y,y+16,C.fs); y+=16;
+
+  // 合格？
+  const d1=diamond(svg,cx,y+36,52,36,'合格？'); y+=72;
+  const bTopY=y+8, bLC=cx-80, bRC=cx+80;
+  elbow(svg,d1.left,d1.cy,bLC,bTopY,d1.cy,C.no,'NO');
+  node(svg,bLC-60,bTopY,120,44,'不合格通知\nor ダウンセル打診','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  elbow(svg,d1.right,d1.cy,bRC,bTopY,d1.cy,C.yes,'YES');
+  node(svg,bRC-60,bTopY,120,44,'🚀 ロケット\n~約3日',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,12);
+  varrow(svg,bRC,bTopY+44,bTopY+66,C.fs);
+  node(svg,bRC-60,bTopY+66,120,44,'📞 CB\n~即日〜',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,12);
+
+  y=bTopY+66+44+16;
+  varrow(svg,bRC,bTopY+66+44,y,C.yes);
+  varrow(svg,bLC,bTopY+44,y,C.no);
+  svg.appendChild(el('line',{x1:bLC,y1:y,x2:bRC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+14,C.yes); y+=14;
+
+  // 辞退意向
+  const d2=diamond(svg,cx,y+36,58,36,'辞退意向\nあり？'); y+=72;
+  const b2TopY=y+8, b2LC=cx-80, b2RC=cx+80;
+  elbow(svg,d2.left,d2.cy,b2LC,b2TopY,d2.cy,C.no,'YES');
+  node(svg,b2LC-60,b2TopY,120,44,'辞退処理\nor 掘り起こし','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  elbow(svg,d2.right,d2.cy,b2RC,b2TopY,d2.cy,C.yes,'NO');
+  // right branch just a line down
+  y=b2TopY+44+16;
+  varrow(svg,b2RC,b2TopY,y,C.yes);
+  varrow(svg,b2LC,b2TopY+44,y,C.no);
+  svg.appendChild(el('line',{x1:b2LC,y1:y,x2:b2RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+14,C.yes); y+=14;
+
+  // 契約日確定？
+  const d3=diamond(svg,cx,y+36,58,36,'契約日\n確定？'); y+=72;
+  const b3TopY=y+8, b3LC=cx-80, b3RC=cx+80;
+  elbow(svg,d3.left,d3.cy,b3LC,b3TopY,d3.cy,C.no,'NO');
+  noteBox(svg,b3LC-55,b3TopY,110,40,['当週で打診','ダウンセルも打診']);
+  elbow(svg,d3.right,d3.cy,b3RC,b3TopY,d3.cy,C.yes,'YES');
+  const sd3=diamond(svg,b3RC,b3TopY+54,50,30,'契約前\n辞退？');
+  varrow(svg,b3RC,b3TopY+54+30,b3TopY+54+30+14,C.no);
+  node(svg,b3RC-55,b3TopY+54+30+14,110,44,'ディレ対応\n→再契約 or 辞退','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+
+  y=b3TopY+54+30+14+44+16;
+  varrow(svg,b3RC,b3TopY+54+30+14+44,y,C.no);
+  varrow(svg,b3LC,b3TopY+40,y,C.no);
+  svg.appendChild(el('line',{x1:b3LC,y1:y,x2:b3RC,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
+  varrow(svg,cx,y,y+16,C.yes); y+=16;
+
+  const nContract=node(svg,cx-NW/2,y,NW,NH,'📝 契約',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
+  varrow(svg,cx,y,y+16,C.fs); y+=16;
+
+  // 信販？
+  const d4=diamond(svg,cx,y+36,52,36,'信販？'); y+=72;
+
+  // YES branch (左): 承認？
+  const yesX=cx-95, noX=cx+95;
+  const b4TopY=y+8;
+  elbow(svg,d4.left,d4.cy,yesX,b4TopY,d4.cy,C.yes,'YES');
+  const sd4=diamond(svg,yesX,b4TopY+50,50,32,'承認？');
+
+  // 承認NO (さらに左): RM対応 → 料金メモ
+  const rmX=yesX-70, okX=yesX+70;
+  const b4bTopY=b4TopY+50+32+12;
+  elbow(svg,sd4.left,sd4.cy,rmX,b4bTopY,sd4.cy,C.no,'NO');
+  const nRM=node(svg,rmX-50,b4bTopY,100,38,'RM対応',C.warn,C.warnBg,C.warn,6,11);
+  varrow(svg,rmX,b4bTopY+38,b4bTopY+38+14,C.neutral);
+  const pb=priceBox(svg,rmX-60,b4bTopY+38+14,140);
+
+  // 承認YES (右): 決済次第進行開始
+  elbow(svg,sd4.right,sd4.cy,okX,b4bTopY,sd4.cy,C.yes,'YES');
+  node(svg,okX-50,b4bTopY,100,44,'決済次第\n進行開始',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,11);
+
+  // NO branch (右): 現金 / クレカ
+  elbow(svg,d4.right,d4.cy,noX,b4TopY,d4.cy,C.no,'NO');
+  const cashX=noX-52, ccX=noX+52;
+  // 現金
+  const cashTopY=b4TopY+30;
+  elbow(svg,noX,b4TopY,cashX,cashTopY,b4TopY+16,C.neutral,'現金');
+  node(svg,cashX-46,cashTopY,92,44,'現金\n~1回目¥40万〜',C.text,C.nodeBg,C.nodeBorder,6,11);
+  // クレカ
+  elbow(svg,noX,b4TopY,ccX,cashTopY,b4TopY+16,C.neutral,'クレカ');
+  node(svg,ccX-46,cashTopY,92,44,'クレカ決済\n~→ 進行開始',C.text,C.nodeBg,C.nodeBorder,6,11);
+
+  // resume after all branches
+  const resumeY = Math.max(
+    b4bTopY+38+14+pb.h+16,
+    b4bTopY+44+16,
+    cashTopY+44+16
+  );
+
+  varrow(svg,rmX,b4bTopY+38+14+pb.h,resumeY,C.neutral);
+  varrow(svg,okX,b4bTopY+44,resumeY,C.yes);
+  varrow(svg,cashX,cashTopY+44,resumeY,C.neutral);
+  varrow(svg,ccX,cashTopY+44,resumeY,C.neutral);
+
+  y=resumeY;
+  varrow(svg,cx,y,y+16,C.fs); y+=16;
+
+  // 商品 MP/VP
+  const dBig=diamond(svg,cx,y+46,68,44,'商品\nMP / VP',C.fs,C.fs); y+=90;
+
+  const mpX=cx-90, vpX=cx+90;
+  const forkY=y+8;
+  elbow(svg,dBig.left,dBig.cy,mpX,forkY,dBig.cy,C.mp,'MP');
+  node(svg,mpX-55,forkY,110,38,'→ MP 楽曲制作',C.mp,'rgba(59,130,246,0.06)','rgba(59,130,246,0.5)',7,11,'bold');
+  elbow(svg,dBig.right,dBig.cy,vpX,forkY,dBig.cy,C.vp,'VP');
+  node(svg,vpX-55,forkY,110,38,'→ VP 提供',C.vp,'rgba(168,85,247,0.06)','rgba(168,85,247,0.5)',7,11,'bold');
+
+  y=forkY+38+20;
+  svg.setAttribute('width',W);
+  svg.setAttribute('height',y);
+}
+
+// ─── Build MP diagram ───────────────────────────────────────────────────────
+function buildMP(svg){
+  const W=380, cx=W/2;
+  let y=20;
+
+  // plan fork diamond
+  const dpf=diamond(svg,cx,y+40,54,36,'プラン選択',C.mp,C.mp); y+=76;
+
+  const mpNW=cx-60, mpcX=cx+60;
+  const planTopY=y+12;
+  elbow(svg,dpf.left,dpf.cy,mpNW,planTopY,dpf.cy,C.mp,'MP通常');
+  elbow(svg,dpf.right,dpf.cy,mpcX,planTopY,dpf.cy,C.mp,'MPC');
+
+  // helper to draw a plan card column
+  function mpPlanCol(svg,cx2,startY,title,steps){
+    const CW=148;
+    let cy=startY;
+    // title box
+    svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:26,rx:6,fill:'rgba(59,130,246,0.12)',stroke:'rgba(59,130,246,0.5)','stroke-width':1.5}));
+    const tt=el('text',{x:cx2,y:cy+14,'text-anchor':'middle','dominant-baseline':'middle',fill:C.mp,'font-size':10,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});
+    tt.textContent=title; svg.appendChild(tt); cy+=26;
+    steps.forEach(({label,sub,arrow},i)=>{
+      if(arrow){varrow(svg,cx2,cy,cy+10,C.mp);cy+=10;}
+      const lns=label.split('\n');
+      const h=Math.max(34,lns.length*18+8);
+      svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:h,rx:5,fill:'rgba(59,130,246,0.12)',stroke:'rgba(59,130,246,0.5)','stroke-width':1}));
+      lns.forEach((ln,li)=>{
+        const t=el('text',{x:cx2,y:cy+14+li*16,'text-anchor':'middle','dominant-baseline':'middle',fill:C.text,'font-size':11,'font-family':"'Noto Sans JP',sans-serif"});
+        t.textContent=ln;svg.appendChild(t);
+      });
+      if(sub){
+        const st=el('text',{x:cx2,y:cy+h-6,'text-anchor':'middle',fill:C.textSub,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});
+        st.textContent=sub;svg.appendChild(st);
+      }
+      cy+=h;
+    });
+    varrow(svg,cx2,cy,cy+10,C.mp);cy+=10;
+    // END
+    svg.appendChild(el('rect',{x:cx2-55,y:cy,width:110,height:28,rx:14,fill:'#151823',stroke:'#475569','stroke-width':1.5}));
+    const et=el('text',{x:cx2,y:cy+14,'text-anchor':'middle','dominant-baseline':'middle',fill:'#64748b','font-size':11,'font-family':"'Noto Sans JP',sans-serif"});
+    et.textContent='🏁 完了';svg.appendChild(et);cy+=28;
+    return cy;
+  }
+
+  const stepsCommon=[
+    {label:'発注書作成（A&R）',arrow:true},
+    {label:'システム登録',arrow:true},
+    {label:'パートナーへ発注',sub:'制作期間：約1ヶ月',arrow:true},
+    {label:'初稿納品',arrow:true},
+    {label:'修正 → 繰り返し',arrow:true},
+    {label:'検収 → FIX受領',arrow:true},
+    {label:'ボイトレ促し',arrow:true},
+    {label:'キー変更対応',arrow:true},
+    {label:'最終キー音源確認',arrow:true},
+    {label:'パラデータ依頼・納品',arrow:true},
+    {label:'請求依頼 → 請求処理',arrow:true},
+  ];
+
+  const endY1=mpPlanCol(svg,mpNW,planTopY,'🎵 MP通常プラン',stepsCommon);
+  const endY2=mpPlanCol(svg,mpcX,planTopY,'🎵 MPCプラン',stepsCommon);
+
+  const totalH=Math.max(endY1,endY2)+20;
+  svg.setAttribute('width',W);
+  svg.setAttribute('height',totalH);
+}
+
+// ─── Build VP diagram ───────────────────────────────────────────────────────
+function buildVP(svg){
+  const W=380, cx=W/2;
+  let y=20;
+
+  const dpf=diamond(svg,cx,y+40,54,36,'プラン選択',C.vp,C.vp); y+=76;
+
+  const vpNW=cx-60, vpcX=cx+60;
+  const planTopY=y+12;
+  elbow(svg,dpf.left,dpf.cy,vpNW,planTopY,dpf.cy,C.vp,'VP通常');
+  elbow(svg,dpf.right,dpf.cy,vpcX,planTopY,dpf.cy,C.vp,'VPC');
+
+  function vpPlanCol(svg,cx2,startY,title,steps){
+    const CW=148;
+    let cy=startY;
+    svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:26,rx:6,fill:'rgba(168,85,247,0.12)',stroke:'rgba(168,85,247,0.5)','stroke-width':1.5}));
+    const tt=el('text',{x:cx2,y:cy+14,'text-anchor':'middle','dominant-baseline':'middle',fill:C.vp,'font-size':10,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});
+    tt.textContent=title;svg.appendChild(tt);cy+=26;
+    steps.forEach(({label,sub,arrow})=>{
+      if(arrow){varrow(svg,cx2,cy,cy+10,C.vp);cy+=10;}
+      const lns=label.split('\n');
+      const h=Math.max(34,lns.length*18+8);
+      svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:h,rx:5,fill:'rgba(168,85,247,0.12)',stroke:'rgba(168,85,247,0.5)','stroke-width':1}));
+      lns.forEach((ln,li)=>{
+        const t=el('text',{x:cx2,y:cy+14+li*16,'text-anchor':'middle','dominant-baseline':'middle',fill:C.text,'font-size':11,'font-family':"'Noto Sans JP',sans-serif"});
+        t.textContent=ln;svg.appendChild(t);
+      });
+      if(sub){
+        const st=el('text',{x:cx2,y:cy+h-6,'text-anchor':'middle',fill:C.textSub,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});
+        st.textContent=sub;svg.appendChild(st);
+      }
+      cy+=h;
+    });
+    varrow(svg,cx2,cy,cy+10,C.vp);cy+=10;
+    svg.appendChild(el('rect',{x:cx2-55,y:cy,width:110,height:28,rx:14,fill:'#151823',stroke:'#475569','stroke-width':1.5}));
+    const et=el('text',{x:cx2,y:cy+14,'text-anchor':'middle','dominant-baseline':'middle',fill:'#64748b','font-size':11,'font-family':"'Noto Sans JP',sans-serif"});
+    et.textContent='🏁 アフターへ';svg.appendChild(et);cy+=28;
+    return cy;
+  }
+
+  const stepsVP=[
+    {label:'オリエン面談',arrow:true},
+    {label:'ボイトレ ×6回',sub:'基礎練×2→ボイサン練習×2→掛け合い×2',arrow:true},
+    {label:'宣材撮影',arrow:true},
+    {label:'VS収録',arrow:true},
+    {label:'ボイスドラマ収録',arrow:true},
+    {label:'P面談 / S面談\nD面談 / L面談',arrow:true},
+  ];
+  const stepsVPC=[
+    {label:'オリエン面談',arrow:true},
+    {label:'キャラ制作面談',arrow:true},
+    {label:'ボイトレ ×4回',sub:'基礎練×2→掛け合い練習×2',arrow:true},
+    {label:'ドラマ前顔合わせ',arrow:true},
+    {label:'ボイスドラマ収録',arrow:true},
+    {label:'D面談 / L面談',arrow:true},
+  ];
+
+  const endY1=vpPlanCol(svg,vpNW,planTopY,'🎤 VP通常プラン',stepsVP);
+  const endY2=vpPlanCol(svg,vpcX,planTopY,'🎤 VPCプラン',stepsVPC);
+
+  const totalH=Math.max(endY1,endY2)+20;
+  svg.setAttribute('width',W);
+  svg.setAttribute('height',totalH);
+}
+
+// ─── Init ───────────────────────────────────────────────────────────────────
+buildIS(document.getElementById('svg-is'));
+buildFS(document.getElementById('svg-fs'));
+buildMP(document.getElementById('svg-mp'));
+buildVP(document.getElementById('svg-vp'));
+
+// zoom & pan
+let scale=1;
+const cv=document.getElementById('cv');
+const fvp=document.getElementById('fvp');
+const lbl=document.getElementById('zlbl');
+function z(d){
+  scale=Math.min(2.5,Math.max(0.25,scale+d));
+  cv.style.transform=`scale(${scale})`;
+  cv.style.marginBottom=`${Math.max(0,(scale-1)*cv.offsetHeight)}px`;
+  cv.style.marginRight=`${Math.max(0,(scale-1)*cv.offsetWidth)}px`;
+  lbl.textContent=Math.round(scale*100)+'%';
+}
+function zr(){scale=1;cv.style.transform='';cv.style.marginBottom='';cv.style.marginRight='';lbl.textContent='100%';}
+fvp.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();z(e.deltaY<0?0.05:-0.05);}},{passive:false});
+let drag=false,ox,oy,sl,st;
+fvp.addEventListener('mousedown',e=>{drag=true;ox=e.pageX;oy=e.pageY;sl=fvp.scrollLeft;st=fvp.scrollTop;});
+window.addEventListener('mouseup',()=>drag=false);
+window.addEventListener('mousemove',e=>{if(!drag)return;fvp.scrollLeft=sl-(e.pageX-ox);fvp.scrollTop=st-(e.pageY-oy);});
 </script>
 </body>
 </html>
