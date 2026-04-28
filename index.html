@@ -527,24 +527,28 @@ function buildIS(svg){
 
 // ─── Build FS diagram ───────────────────────────────────────────────────────
 function buildFS(svg){
-  // レーン定義（左→右）
-  // L0=50  L1=200  L2=380(cx)  L3=560  L4=710
-  const W   = 780;
-  const NW  = 200, NH = 44;
-  const cx  = 390;   // メイン中央
+  // ═══ レーン定義（幅を広げて全分岐が見えるように）═══
+  const W     = 900;
+  const cx    = 450;  // メイン中央
+  const NW    = 200, NH = 44;
+  const SN    = 120, SH = 42;  // 小ノード
+  const NW2   = 110;
+
+  // 決済方法レーン
+  const CASH_X = 120;   // 現金
+  const CC_X   = 260;   // クレカ
+
   // 信販フロー専用レーン
-  const LRE_OK  = 60;   // 再審査承認
-  const LRE     = 190;  // 信販再審査
-  const LS2     = 310;  // 2社目審査
-  const LRM     = 530;  // RM直接 / RM合流
-  const LS2_OK  = 560;  // 2社目承認
-  const LAP     = 700;  // 1社目承認 / 再審査承認(右)
-  const NW2 = 110; // 小ノード幅
-  const NH2 = 40;
+  const LRE_OK = 30;    // 再審査承認
+  const LRE    = 150;   // 信販再審査
+  const LS2    = 300;   // 2社目審査
+  const LRM    = 540;   // RM合流
+  const LS2_OK = 610;   // 2社目承認
+  const LAP    = 760;   // 1社目承認
 
   let y = 20;
 
-  // ─── 面談〜契約（メインフロー）───────────────────────────────────
+  // ─── 面談〜契約 ───────────────────────────────────────────────
   node(svg,cx-NW/2,y,NW,NH,'🤝 面談',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
   varrow(svg,cx,y,y+22,C.fs); y+=22;
 
@@ -587,115 +591,108 @@ function buildFS(svg){
   node(svg,cx-NW/2,y,NW,NH,'📝 契約',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold'); y+=NH;
   varrow(svg,cx,y,y+28,C.fs); y+=28;
 
-  // ─── 信販フロー（レーン構造）────────────────────────────────────
-  // ノードサイズ統一
-  const SN = 120, SH = 42; // 信販用小ノード
+  // ─── 決済方法分岐 ───────────────────────────────────────────────
+  const dPay=diamond(svg,cx,y+44,68,44,'決済方法？'); y+=88;
 
-  // ① 信販審査（1社目）
+  // 現金（左端）
+  const cashT=y+20;
+  elbow(svg,dPay.left,dPay.cy,CASH_X,cashT,dPay.cy,C.neutral,'現金');
+  node(svg,CASH_X-SN/2,cashT,SN,SH,'✅ 進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  const cashBottomY=cashT+SH;
+
+  // クレカ（左寄り）
+  const ccT=y+20;
+  elbow(svg,dPay.left,dPay.cy,CC_X,ccT,dPay.cy,C.neutral,'クレカ');
+  node(svg,CC_X-SN/2,ccT,SN,SH,'✅ 進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  const ccBottomY=ccT+SH;
+
+  // 信販（真下）
+  varrow(svg,cx,y,y+28,C.fs,'信販','right'); y+=28;
+
+  // ─── 信販フロー ─────────────────────────────────────────────────
   const d4=diamond(svg,cx,y+44,68,44,'信販審査\n（1社目）'); y+=88;
 
-  // ① → 承認: 右レーン(LAP)へ
-  const ap1Y = y+20;
+  const ap1Y=y+20;
   elbow(svg,d4.right,d4.cy,LAP,ap1Y,d4.cy,C.yes,'承認');
   node(svg,LAP-SN/2,ap1Y,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
 
-  // ① → 否決: 真下
   varrow(svg,cx,y,y+28,C.no,'否決','right'); y+=28;
 
-  // ② 2社目審査する？
   const d5=diamond(svg,cx,y+44,74,44,'2社目\n審査する？'); y+=88;
 
-  // ② → YES: 左レーン(LS2)へ
-  const s2T = y+20;
+  const s2T=y+20;
   elbow(svg,d5.left,d5.cy,LS2,s2T,d5.cy,C.yes,'YES');
   const ds2=diamond(svg,LS2,s2T+60,56,38,'2社目\n承認？');
 
-  // 2社目→承認: LS2_OKレーン（LS2の右）へ、縦方向もずらして線を離す
-  const s2OkY = s2T+60+20;
-  elbow(svg,ds2.right,ds2.cy,LS2_OK,s2OkY,ds2.cy,C.yes,'承認');
-  node(svg,LS2_OK-SN/2,s2OkY,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  const s2OkY=s2T+60+20;
+  const s2OkNodeX=LS2_OK;
+  elbow(svg,ds2.right,ds2.cy,s2OkNodeX,s2OkY,ds2.cy,C.yes,'承認');
+  node(svg,s2OkNodeX-SN/2,s2OkY,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
 
-  // 2社目→否決: LS2を下へ
-  const s2DnyY = s2T+60+38+28;
+  const s2DnyY=s2T+60+38+28;
   varrow(svg,LS2,s2T+60+38,s2DnyY,C.no,'否決','right');
 
-  // ② → NO直接: 右レーン(LRM)へ
   elbow(svg,d5.right,d5.cy,LRM,s2T,d5.cy,C.no,'NO（直接）');
 
-  // RM合流点
-  const rmJY = Math.max(s2DnyY, s2T+60)+28;
+  const rmJY=Math.max(s2DnyY,s2T+60)+28;
   varrow(svg,LS2,s2DnyY,rmJY,C.no);
   varrow(svg,LRM,s2T,rmJY,C.no);
   svg.appendChild(el('line',{x1:LS2,y1:rmJY,x2:LRM,y2:rmJY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
   varrow(svg,cx,rmJY,rmJY+22,C.neutral); y=rmJY+22;
 
-  // ③ RM対応
   node(svg,cx-70,y,140,SH,'⚙️ RM対応',C.warn,'rgba(245,158,11,0.08)',C.warn,7,13,'bold'); y+=SH;
   varrow(svg,cx,y,y+28,C.neutral); y+=28;
 
-  // ④ 再審査価値あり？
   const d6=diamond(svg,cx,y+44,80,44,'再審査\n価値あり？'); y+=88;
 
-  // ④ → YES: 左レーン(LRE)へ
-  const reT = y+20;
+  const reT=y+20;
   elbow(svg,d6.left,d6.cy,LRE,reT,d6.cy,C.yes,'YES');
   const dRe=diamond(svg,LRE,reT+60,56,38,'信販\n再審査');
 
-  // 再審査→承認: LRE_OKレーン（さらに左）へ
-  const reOkY = reT+60+20;
+  const reOkY=reT+60+20;
   elbow(svg,dRe.left,dRe.cy,LRE_OK,reOkY,dRe.cy,C.yes,'承認');
   node(svg,LRE_OK-SN/2,reOkY,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
 
-  // 再審査→否決: LREを下へ
-  const reDnyY = reT+60+38+28;
+  const reDnyY=reT+60+38+28;
   varrow(svg,LRE,reT+60+38,reDnyY,C.no,'否決','right');
 
-  // ④ → NO: 右レーン(LRM)へ自社ローン
-  const slT = reT;
-  elbow(svg,d6.right,d6.cy,LRM,slT,d6.cy,C.no,'NO');
+  elbow(svg,d6.right,d6.cy,LRM,reT,d6.cy,C.no,'NO');
 
-  // 自社ローン合流点
-  const slJY = Math.max(reDnyY, slT+60)+28;
+  const slJY=Math.max(reDnyY,reT+20)+10;
   varrow(svg,LRE,reDnyY,slJY,C.no);
-  varrow(svg,LRM,slT,slJY,C.no);
+  varrow(svg,LRM,reT,slJY,C.no);
   svg.appendChild(el('line',{x1:LRE,y1:slJY,x2:LRM,y2:slJY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
   varrow(svg,cx,slJY,slJY+22,C.neutral); y=slJY+22;
 
-  // ⑤ 自社ローンで契約
   node(svg,cx-80,y,160,SH,'🏦 自社ローンで契約',C.text,'rgba(59,130,246,0.1)','rgba(59,130,246,0.4)',7,12,'bold'); y+=SH;
   varrow(svg,cx,y,y+36,C.fs); y+=36;
 
-  // ─── 商品？バー（全ルート収束）─────────────────────────────────
+  // ─── 商品？バー（全ルート収束）──────────────────────────────────
   const barY=y, barX=20, barW=W-40, barH=54;
 
-  // 承認ルート3本（縦線→バー上端）
-  const apRoutes=[
-    {x:LAP,   fromY:ap1Y+SH},
-    {x:LS2_OK,fromY:s2OkY+SH},
-    {x:LRE_OK,fromY:reOkY+SH},
-  ];
-  apRoutes.forEach(({x,fromY})=>{
-    // ノード底辺からバー上端まで縦線
-    svg.appendChild(el('line',{x1:x,y1:fromY,x2:x,y2:barY,stroke:C.yes,'stroke-width':2}));
-    // バー上端を横に走って中央へ
-    svg.appendChild(el('line',{x1:x,y1:barY,x2:cx,y2:barY,stroke:C.yes,'stroke-width':1,'stroke-dasharray':'5,4'}));
-    // 収束点に小さな丸
-    svg.appendChild(el('circle',{cx:x,cy:barY,r:4,fill:C.yes}));
+  // 全進行開始ルートをバー上端へ収束
+  [
+    {x:CASH_X,   fromY:cashBottomY, color:C.neutral},
+    {x:CC_X,     fromY:ccBottomY,   color:C.neutral},
+    {x:LAP,      fromY:ap1Y+SH,     color:C.yes},
+    {x:s2OkNodeX,fromY:s2OkY+SH,    color:C.yes},
+    {x:LRE_OK,   fromY:reOkY+SH,    color:C.yes},
+  ].forEach(({x,fromY,color})=>{
+    svg.appendChild(el('line',{x1:x,y1:fromY,x2:x,y2:barY,stroke:color,'stroke-width':2}));
+    svg.appendChild(el('line',{x1:x,y1:barY,x2:cx,y2:barY,stroke:color,'stroke-width':1,'stroke-dasharray':'5,4'}));
+    svg.appendChild(el('circle',{cx:x,cy:barY,r:4,fill:color}));
   });
 
-  // バー本体（承認線の上に描画して重ねる）
   svg.appendChild(el('rect',{x:barX,y:barY,width:barW,height:barH,rx:12,
     fill:'rgba(249,115,22,0.18)',stroke:'#f97316','stroke-width':2.5}));
   const bl=el('text',{x:cx,y:barY+barH/2,'text-anchor':'middle','dominant-baseline':'middle',
     fill:'#fb923c','font-size':16,'font-weight':800,'font-family':"'Syne','Noto Sans JP',sans-serif"});
   bl.textContent='商品？'; svg.appendChild(bl);
 
-  // バーからMP/VP（バーの左35%・右65%から縦に落とす）
   const mpX=barX+barW*0.30, vpX=barX+barW*0.70;
   const arrLen=60;
   varrow(svg,mpX,barY+barH,barY+barH+arrLen,C.mp);
   varrow(svg,vpX,barY+barH,barY+barH+arrLen,C.vp);
-  // ラベル
   [{x:mpX,c:C.mp,t:'MP'},{x:vpX,c:C.vp,t:'VP'}].forEach(({x,c,t})=>{
     const lbl=el('text',{x:x+8,y:barY+barH+arrLen/2,'dominant-baseline':'middle',
       fill:c,'font-size':10,'font-weight':600,'font-family':"'IBM Plex Mono',monospace"});
@@ -710,7 +707,6 @@ function buildFS(svg){
   svg.setAttribute('width',W);
   svg.setAttribute('height',y);
 }
-
 // ─── Build MP diagram ───────────────────────────────────────────────────────
 function buildMP(svg){
   // 2プランを左右に大きく広げる
