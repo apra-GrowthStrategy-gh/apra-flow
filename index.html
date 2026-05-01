@@ -481,7 +481,7 @@ function buildFS(svg){
   const apSub=el('text',{x:HK_X,y:AP_TOP+40,'text-anchor':'middle',fill:C.yes,'font-size':9,'font-family':"'IBM Plex Mono',monospace"});
   apSub.textContent='（共通）'; svg.appendChild(apSub);
   const apSub2=el('text',{x:HK_X,y:AP_TOP+56,'text-anchor':'middle',fill:C.yes,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});
-  apSub2.textContent='→ 商品？バーへ'; svg.appendChild(apSub2);
+  apSub2.textContent='→ 商品分岐バーへ'; svg.appendChild(apSub2);
   hkApBottomY = AP_TOP + AP_H;
 
   // ─── 自社ローンで契約 ────────────────────────────────────────────
@@ -532,7 +532,7 @@ function buildFS(svg){
     fill:'rgba(249,115,22,0.18)',stroke:'#f97316','stroke-width':2.5}));
   const bl=el('text',{x:MAIN,y:barY+barH/2,'text-anchor':'middle','dominant-baseline':'middle',
     fill:'#fb923c','font-size':18,'font-weight':800,'font-family':"'Syne','Noto Sans JP',sans-serif"});
-  bl.textContent='商品は？'; svg.appendChild(bl);
+  bl.textContent='商品の分岐'; svg.appendChild(bl);
 
   const mpX=barX+barW*0.28,vpX=barX+barW*0.72,arrLen=80;
   varrow(svg,mpX,barY+barH,barY+barH+arrLen,C.mp);
