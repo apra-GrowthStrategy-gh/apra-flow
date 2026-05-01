@@ -252,101 +252,304 @@ function buildIS(svg){
 }
 
 function buildFS(svg){
-  const W=900,cx=450,NW=200,NH=44,SN=120,SH=42,NW2=110;
-  const CASH_X=120,CC_X=260,LRE_OK=30,LRE=150,LS2=300,LRM=540,LS2_OK=610,LAP=760;
-  let y=20;
-  node(svg,cx-NW/2,y,NW,NH,'🤝 面談',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold');y+=NH;varrow(svg,cx,y,y+22,C.fs);y+=22;
-  const d1=diamond(svg,cx,y+40,56,40,'合格？');y+=80;
-  const b1L=cx-120,b1R=cx+120,b1T=y+14;
-  elbow(svg,d1.left,d1.cy,b1L,b1T,d1.cy,C.no,'NO');node(svg,b1L-NW2/2,b1T,NW2,44,'不合格通知\nor ダウンセル','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
-  elbow(svg,d1.right,d1.cy,b1R,b1T,d1.cy,C.yes,'YES');node(svg,b1R-NW2/2,b1T,NW2,44,'🚀 ロケット\n~約3日',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,11);varrow(svg,b1R,b1T+44,b1T+72,C.fs);node(svg,b1R-NW2/2,b1T+72,NW2,44,'📞 CB\n~即日〜',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,11);
-  y=b1T+72+44+22;varrow(svg,b1R,b1T+72+44,y,C.yes);varrow(svg,b1L,b1T+44,y,C.no);svg.appendChild(el('line',{x1:b1L,y1:y,x2:b1R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));varrow(svg,cx,y,y+22,C.yes);y+=22;
-  const d2=diamond(svg,cx,y+40,62,40,'辞退意向\nあり？');y+=80;
-  const b2L=cx-120,b2R=cx+120,b2T=y+14;
-  elbow(svg,d2.left,d2.cy,b2L,b2T,d2.cy,C.no,'YES');node(svg,b2L-NW2/2,b2T,NW2,44,'辞退処理\nor 掘り起こし','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  // ═══ レーン定義（1600px幅）═══
+  const W        = 1600;
+  const MAIN     = 780;
+  const NW       = 220, NH = 52;
+  const SN       = 150, SH = 52;
+  const GAP      = 44;
+
+  // 決済方法レーン
+  const CASH_X   = 340;
+  const CC_X     = 500;
+  const JISHA_X  = 1100;
+
+  // 本人確認レーン（共通・左端）
+  const HK_X     = 160;
+  const HK_WAIT_W = 160;
+  const HK_WAIT_H = 110;
+  const HK_AP_W   = 160;
+  const HK_AP_H   = 110;
+
+  // 非承認ノードX（MAIN軸）
+  // 各社の非承認はMAINに縦に並ぶ
+
+  const CANCEL_X = 1480;
+
+  let y = 30;
+
+  // ─── 面談〜契約 ─────────────────────────────────────────────────
+  node(svg,MAIN-NW/2,y,NW,NH,'🤝 面談',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold');
+  y+=NH; varrow(svg,MAIN,y,y+GAP,C.fs); y+=GAP;
+
+  const d1=diamond(svg,MAIN,y+52,68,52,'合格？'); y+=104;
+  const b1L=MAIN-180,b1R=MAIN+180,b1T=y+GAP;
+  elbow(svg,d1.left,d1.cy,b1L,b1T,d1.cy,C.no,'NO');
+  node(svg,b1L-65,b1T,130,52,'不合格通知\nor ダウンセル','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  elbow(svg,d1.right,d1.cy,b1R,b1T,d1.cy,C.yes,'YES');
+  node(svg,b1R-65,b1T,130,52,'🚀 ロケット\n~約3日',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,11);
+  varrow(svg,b1R,b1T+52,b1T+52+GAP,C.fs);
+  node(svg,b1R-65,b1T+52+GAP,130,52,'📞 CB\n~即日〜',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',6,11);
+  y=b1T+52+GAP+52+GAP;
+  varrow(svg,b1R,b1T+52+GAP+52,y,C.yes); varrow(svg,b1L,b1T+52,y,C.no);
+  svg.appendChild(el('line',{x1:b1L,y1:y,x2:b1R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'4,3'}));
+  varrow(svg,MAIN,y,y+GAP,C.yes); y+=GAP;
+
+  const d2=diamond(svg,MAIN,y+52,74,52,'辞退意向\nあり？'); y+=104;
+  const b2L=MAIN-180,b2R=MAIN+180,b2T=y+GAP;
+  elbow(svg,d2.left,d2.cy,b2L,b2T,d2.cy,C.no,'YES');
+  node(svg,b2L-65,b2T,130,52,'辞退処理\nor 掘り起こし','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
   elbow(svg,d2.right,d2.cy,b2R,b2T,d2.cy,C.yes,'NO');
-  y=b2T+44+22;varrow(svg,b2R,b2T,y,C.yes);varrow(svg,b2L,b2T+44,y,C.no);svg.appendChild(el('line',{x1:b2L,y1:y,x2:b2R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));varrow(svg,cx,y,y+22,C.yes);y+=22;
-  const d3=diamond(svg,cx,y+40,62,40,'契約日\n確定？');y+=80;
-  const b3L=cx-120,b3R=cx+120,b3T=y+14;
-  elbow(svg,d3.left,d3.cy,b3L,b3T,d3.cy,C.no,'NO');noteBox(svg,b3L-55,b3T,110,40,['当週で打診','ダウンセルも打診']);
-  elbow(svg,d3.right,d3.cy,b3R,b3T,d3.cy,C.yes,'YES');const sd3=diamond(svg,b3R,b3T+56,54,34,'契約前\n辞退？');varrow(svg,b3R,b3T+56+34,b3T+56+34+18,C.no);node(svg,b3R-NW2/2,b3T+56+34+18,NW2,44,'ディレ対応\n→再契約 or 辞退','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
-  y=b3T+56+34+18+44+22;varrow(svg,b3R,b3T+56+34+18+44,y,C.no);varrow(svg,b3L,b3T+40,y,C.no);svg.appendChild(el('line',{x1:b3L,y1:y,x2:b3R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));varrow(svg,cx,y,y+22,C.yes);y+=22;
-  node(svg,cx-NW/2,y,NW,NH,'📝 契約',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold');y+=NH;varrow(svg,cx,y,y+28,C.fs);y+=28;
-  // 決済方法分岐
-  const dPay=diamond(svg,cx,y+44,68,44,'決済方法？');y+=88;
-  const cashT=y+20;
-  elbow(svg,dPay.left,dPay.cy,CASH_X,cashT,dPay.cy,C.neutral,'現金');node(svg,CASH_X-SN/2,cashT,SN,SH,'✅ 進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');const cashBottomY=cashT+SH;
-  const ccT=y+20;
-  elbow(svg,dPay.left,dPay.cy,CC_X,ccT,dPay.cy,C.neutral,'クレカ');node(svg,CC_X-SN/2,ccT,SN,SH,'✅ 進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');const ccBottomY=ccT+SH;
-  varrow(svg,cx,y,y+28,C.fs,'信販','right');y+=28;
-  // 信販審査1社目
-  const d4=diamond(svg,cx,y+44,68,44,'信販審査\n（1社目）');y+=88;
-  const ap1Y=y+20;
-  elbow(svg,d4.right,d4.cy,LAP,ap1Y,d4.cy,C.yes,'承認');node(svg,LAP-SN/2,ap1Y,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
-  varrow(svg,cx,y,y+28,C.no,'否決','right');y+=28;
-  // 2社目審査する？
-  const d5=diamond(svg,cx,y+44,74,44,'2社目\n審査する？');y+=88;
-  const s2T=y+20;
-  elbow(svg,d5.left,d5.cy,LS2,s2T,d5.cy,C.yes,'YES');const ds2=diamond(svg,LS2,s2T+60,56,38,'2社目\n承認？');
-  const s2OkY=s2T+60+20,s2OkNodeX=LS2_OK;
-  elbow(svg,ds2.right,ds2.cy,s2OkNodeX,s2OkY,ds2.cy,C.yes,'承認');node(svg,s2OkNodeX-SN/2,s2OkY,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
-  const s2DnyY=s2T+60+38+28;varrow(svg,LS2,s2T+60+38,s2DnyY,C.no,'否決','right');
-  elbow(svg,d5.right,d5.cy,LRM,s2T,d5.cy,C.no,'NO（直接）');
-  // RM合流 → ダウンセル等試して再審査する？
-  const rmJY=Math.max(s2DnyY,s2T+60)+28;
-  varrow(svg,LS2,s2DnyY,rmJY,C.no);varrow(svg,LRM,s2T,rmJY,C.no);
-  svg.appendChild(el('line',{x1:LS2,y1:rmJY,x2:LRM,y2:rmJY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,cx,rmJY,rmJY+22,C.neutral);y=rmJY+22;
-  // ★ 旧「RM対応」→ 「ダウンセル等試して再審査する？」ひし形へ変更
-  const d6=diamond(svg,cx,y+44,90,44,'ダウンセル等試して\n再審査する？');y+=88;
-  // YES → 信販再審査
-  const reT=y+20;
-  elbow(svg,d6.left,d6.cy,LRE,reT,d6.cy,C.yes,'YES');const dRe=diamond(svg,LRE,reT+60,56,38,'信販\n再審査');
-  const reOkY=reT+60+20;
-  elbow(svg,dRe.left,dRe.cy,LRE_OK,reOkY,dRe.cy,C.yes,'承認');node(svg,LRE_OK-SN/2,reOkY,SN,SH,'✅ 決済次第\n進行開始',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
-  const reDnyY=reT+60+38+28;varrow(svg,LRE,reT+60+38,reDnyY,C.no,'否決','right');
-  // NO → 自社ローン直行
-  elbow(svg,d6.right,d6.cy,LRM,reT,d6.cy,C.no,'NO');
-  const slJY=Math.max(reDnyY,reT+20)+10;
-  varrow(svg,LRE,reDnyY,slJY,C.no);varrow(svg,LRM,reT,slJY,C.no);
-  svg.appendChild(el('line',{x1:LRE,y1:slJY,x2:LRM,y2:slJY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'3,3'}));
-  varrow(svg,cx,slJY,slJY+22,C.neutral);y=slJY+22;
-  // 自社ローンで契約
-  node(svg,cx-80,y,160,SH,'🏦 自社ローンで契約',C.text,'rgba(59,130,246,0.1)','rgba(59,130,246,0.4)',7,12,'bold');y+=SH;
-  varrow(svg,cx,y,y+22,C.fs);y+=22;
-  // ★ RM対応（自社ローン→商品？の間）詳細フロー
-  // ① FSがSlackワークフローを送信（頭金入金まではFS対応）
-  node(svg,cx-80,y,160,SH,'📤 FSがSlackワークフロー送信\n~（自社ローン覚書締結後）\n~頭金入金まではFSが対応',C.warn,'rgba(245,158,11,0.06)',C.warn,6,11);y+=SH;
-  varrow(svg,cx,y,y+16,C.warn);y+=16;
-  // ワークフロー内容メモ
-  const wfX=cx+120,wfW=220,wfH=110;
-  svg.appendChild(el('rect',{x:wfX,y:y-16,width:wfW,height:wfH,rx:6,fill:'rgba(245,158,11,0.05)',stroke:'rgba(245,158,11,0.2)','stroke-width':1,'stroke-dasharray':'4,3'}));
-  const wfTitle=el('text',{x:wfX+wfW/2,y:y-4,'text-anchor':'middle',fill:C.warn,'font-size':9,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});wfTitle.textContent='📋 ワークフロー内容';svg.appendChild(wfTitle);
+  y=b2T+52+GAP;
+  varrow(svg,b2R,b2T,y,C.yes); varrow(svg,b2L,b2T+52,y,C.no);
+  svg.appendChild(el('line',{x1:b2L,y1:y,x2:b2R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'4,3'}));
+  varrow(svg,MAIN,y,y+GAP,C.yes); y+=GAP;
+
+  const d3=diamond(svg,MAIN,y+52,74,52,'契約日\n確定？'); y+=104;
+  const b3L=MAIN-180,b3R=MAIN+180,b3T=y+GAP;
+  elbow(svg,d3.left,d3.cy,b3L,b3T,d3.cy,C.no,'NO');
+  noteBox(svg,b3L-55,b3T,130,44,['当週で打診','ダウンセルも打診']);
+  elbow(svg,d3.right,d3.cy,b3R,b3T,d3.cy,C.yes,'YES');
+  const sd3=diamond(svg,b3R,b3T+68,64,44,'契約前\n辞退？');
+  varrow(svg,b3R,b3T+68+44,b3T+68+44+GAP,C.no);
+  node(svg,b3R-65,b3T+68+44+GAP,130,52,'ディレ対応\n→再契約 or 辞退','#f87171','rgba(239,68,68,0.07)','#ef4444',6,11);
+  y=b3T+68+44+GAP+52+GAP;
+  varrow(svg,b3R,b3T+68+44+GAP+52,y,C.no); varrow(svg,b3L,b3T+44,y,C.no);
+  svg.appendChild(el('line',{x1:b3L,y1:y,x2:b3R,y2:y,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'4,3'}));
+  varrow(svg,MAIN,y,y+GAP,C.yes); y+=GAP;
+
+  node(svg,MAIN-NW/2,y,NW,NH,'📝 契約',C.text,'rgba(249,115,22,0.12)','rgba(249,115,22,0.5)',7,13,'bold');
+  y+=NH; varrow(svg,MAIN,y,y+GAP,C.fs); y+=GAP;
+
+  // ─── 決済方法は？ ────────────────────────────────────────────────
+  const dPay=diamond(svg,MAIN,y+56,86,56,'決済方法は？'); y+=112;
+
+  const cashT=y+GAP;
+  elbow(svg,dPay.left,dPay.cy,CASH_X,cashT,dPay.cy,C.neutral,'現金');
+  node(svg,CASH_X-SN/2,cashT,SN,SH,'✅ 進行開始\n~（現金）',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  const cashBottomY=cashT+SH;
+
+  const ccT=y+GAP;
+  elbow(svg,dPay.left,dPay.cy,CC_X,ccT,dPay.cy,C.neutral,'クレカ');
+  node(svg,CC_X-SN/2,ccT,SN,SH,'✅ 進行開始\n~（クレカ）',C.yes,'rgba(34,197,94,0.08)',C.yes,6,11,'bold');
+  const ccBottomY=ccT+SH;
+
+  const jishaFromX=dPay.right, jishaFromY=dPay.cy;
+  varrow(svg,MAIN,y,y+GAP,C.fs,'信販','right'); y+=GAP;
+
+  // ─── 信販フロー ──────────────────────────────────────────────────
+  // 各社：案内中 → 審査中（高さ固定）
+  // 審査中から左へ→本人確認待ち、下へ→非承認
+  // 本人確認待ち・信販承認は左端に1か所・縦長
+
+  const ANNAI_H  = 60;
+  const SHINSA_H = 60;
+  const DENY_H   = 60;
+  const BTW_GAP  = GAP; // 案内中→審査中→非承認の間隔
+
+  // 1社目の開始Y
+  const S1_ANNAI_Y = y;
+
+  // 1社目
+  node(svg,MAIN-SN/2,S1_ANNAI_Y,SN,ANNAI_H,'信販1社目 案内中',C.fs,'rgba(249,115,22,0.05)','rgba(249,115,22,0.3)',6,11);
+  const S1_SHINSA_Y = S1_ANNAI_Y+ANNAI_H+BTW_GAP;
+  varrow(svg,MAIN,S1_ANNAI_Y+ANNAI_H,S1_SHINSA_Y,C.fs);
+  node(svg,MAIN-SN/2,S1_SHINSA_Y,SN,SHINSA_H,'信販1社目 審査中',C.fs,'rgba(249,115,22,0.10)','rgba(249,115,22,0.45)',6,11);
+  const S1_DENY_Y = S1_SHINSA_Y+SHINSA_H+BTW_GAP;
+  varrow(svg,MAIN,S1_SHINSA_Y+SHINSA_H,S1_DENY_Y,C.no,'非承認','right');
+  node(svg,MAIN-SN/2,S1_DENY_Y,SN,DENY_H,'❌ 1社目非承認',C.no,'rgba(239,68,68,0.08)','rgba(239,68,68,0.42)',6,11);
+
+  // 2社目
+  const S2_ANNAI_Y = S1_DENY_Y+DENY_H+BTW_GAP;
+  varrow(svg,MAIN,S1_DENY_Y+DENY_H,S2_ANNAI_Y,C.no);
+  node(svg,MAIN-SN/2,S2_ANNAI_Y,SN,ANNAI_H,'信販2社目 案内中',C.fs,'rgba(249,115,22,0.05)','rgba(249,115,22,0.3)',6,11);
+  const S2_SHINSA_Y = S2_ANNAI_Y+ANNAI_H+BTW_GAP;
+  varrow(svg,MAIN,S2_ANNAI_Y+ANNAI_H,S2_SHINSA_Y,C.fs);
+  node(svg,MAIN-SN/2,S2_SHINSA_Y,SN,SHINSA_H,'信販2社目 審査中',C.fs,'rgba(249,115,22,0.10)','rgba(249,115,22,0.45)',6,11);
+  const S2_DENY_Y = S2_SHINSA_Y+SHINSA_H+BTW_GAP;
+  varrow(svg,MAIN,S2_SHINSA_Y+SHINSA_H,S2_DENY_Y,C.no,'非承認','right');
+  node(svg,MAIN-SN/2,S2_DENY_Y,SN,DENY_H,'❌ 2社目非承認',C.no,'rgba(239,68,68,0.08)','rgba(239,68,68,0.42)',6,11);
+  noteBox(svg,MAIN+SN/2+16,S2_DENY_Y+DENY_H/2-14,210,28,['2社目非承認 ≒ 全非承認扱いが多い']);
+
+  // 3社目（稀）
+  const S3_ANNAI_Y = S2_DENY_Y+DENY_H+BTW_GAP;
+  varrow(svg,MAIN,S2_DENY_Y+DENY_H,S3_ANNAI_Y,C.no);
+  noteBox(svg,MAIN-SN/2-190,S3_ANNAI_Y,170,30,['3社目審査（稀）']);
+  node(svg,MAIN-SN/2,S3_ANNAI_Y,SN,ANNAI_H,'信販3社目 案内中',C.fs,'rgba(249,115,22,0.05)','rgba(249,115,22,0.3)',6,11);
+  const S3_SHINSA_Y = S3_ANNAI_Y+ANNAI_H+BTW_GAP;
+  varrow(svg,MAIN,S3_ANNAI_Y+ANNAI_H,S3_SHINSA_Y,C.fs);
+  node(svg,MAIN-SN/2,S3_SHINSA_Y,SN,SHINSA_H,'信販3社目 審査中',C.fs,'rgba(249,115,22,0.10)','rgba(249,115,22,0.45)',6,11);
+  const S3_DENY_Y = S3_SHINSA_Y+SHINSA_H+BTW_GAP;
+  varrow(svg,MAIN,S3_SHINSA_Y+SHINSA_H,S3_DENY_Y,C.no,'非承認','right');
+  node(svg,MAIN-SN/2,S3_DENY_Y,SN,DENY_H,'❌ 3社目非承認',C.no,'rgba(239,68,68,0.08)','rgba(239,68,68,0.42)',6,11);
+
+  // 3社目非承認 → 信販全非承認
+  const ALL_DENY_Y = S3_DENY_Y+DENY_H+BTW_GAP;
+  varrow(svg,MAIN,S3_DENY_Y+DENY_H,ALL_DENY_Y,C.no);
+  node(svg,MAIN-90,ALL_DENY_Y,180,SH,'🚫 信販全非承認',C.no,'rgba(239,68,68,0.12)','rgba(239,68,68,0.5)',7,12,'bold');
+
+  // キャンセル済み（右端）
+  node(svg,CANCEL_X-SN/2,S1_ANNAI_Y+GAP,SN,SH,'⛔ キャンセル済み',C.textSub,'rgba(148,163,184,0.05)','rgba(148,163,184,0.25)',6,10);
+
+  // ─── 本人確認待ち（共通・縦長・左端）───────────────────────────
+  // ボックスの縦範囲：3社の審査中ノードと非承認ノードを全部カバー
+  const HK_TOP    = S1_SHINSA_Y - GAP;
+  const HK_BOTTOM = S3_DENY_Y + DENY_H + GAP;
+  const HK_H      = HK_BOTTOM - HK_TOP;
+
+  // 本人確認待ちボックス（縦長）- 再審査矢印のY確定後にheightを拡張するためDOMに保持
+  const hkRect = el('rect',{x:HK_X-HK_WAIT_W/2,y:HK_TOP,width:HK_WAIT_W,height:HK_H,rx:8,
+    fill:'rgba(148,163,184,0.07)',stroke:'rgba(148,163,184,0.35)','stroke-width':1.5});
+  svg.appendChild(hkRect);
+  const hkTitle=el('text',{x:HK_X,y:HK_TOP+20,'text-anchor':'middle',fill:C.textSub,'font-size':11,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"});
+  hkTitle.textContent='本人確認待ち'; svg.appendChild(hkTitle);
+  const hkSub=el('text',{x:HK_X,y:HK_TOP+36,'text-anchor':'middle',fill:C.textSub,'font-size':9,'font-family':"'IBM Plex Mono',monospace"});
+  hkSub.textContent='（共通）'; svg.appendChild(hkSub);
+
+  // 各審査中 → 本人確認待ち（水平矢印）
+  [S1_SHINSA_Y,S2_SHINSA_Y,S3_SHINSA_Y].forEach((sy,i)=>{
+    const midY = sy+SHINSA_H/2;
+    svg.appendChild(el('line',{x1:MAIN-SN/2,y1:midY,x2:HK_X+HK_WAIT_W/2,y2:midY,stroke:C.neutral,'stroke-width':2}));
+    svg.appendChild(el('polygon',{points:`${HK_X+HK_WAIT_W/2},${midY} ${HK_X+HK_WAIT_W/2+9},${midY-5} ${HK_X+HK_WAIT_W/2+9},${midY+5}`,fill:C.neutral}));
+    const lbl=el('text',{x:(MAIN-SN/2+HK_X+HK_WAIT_W/2)/2,y:midY-9,'text-anchor':'middle',
+      fill:C.textSub,'font-size':8,'font-family':"'IBM Plex Mono',monospace"});
+    lbl.textContent=`${i+1}社目から`; svg.appendChild(lbl);
+  });
+
+  // ─── 信販承認（共通・固定高さ・本人確認の下）───────────────────
+  // 信販承認ボックスは再審査ノードのY確定後に描くため、ここでは宣言のみ
+  // hkApBottomY は後で設定する（バーへの収束に使う）
+  let hkApBottomY = 0;
+
+  // ─── 本人確認待ち → 非承認（まれ）→ 各社非承認ボックスへ（水平3本）────
+  [
+    {denyY:S1_DENY_Y, label:'非承認(まれ)→1社目'},
+    {denyY:S2_DENY_Y, label:'非承認(まれ)→2社目'},
+    {denyY:S3_DENY_Y, label:'非承認(まれ)→3社目'},
+  ].forEach(({denyY,label})=>{
+    const targetMidY = denyY + DENY_H/2;
+    svg.appendChild(el('line',{x1:HK_X+HK_WAIT_W/2,y1:targetMidY,x2:MAIN-SN/2+8,y2:targetMidY,stroke:C.no,'stroke-width':1.5,'stroke-dasharray':'5,3'}));
+    svg.appendChild(el('polygon',{points:`${MAIN-SN/2},${targetMidY} ${MAIN-SN/2-10},${targetMidY-5} ${MAIN-SN/2-10},${targetMidY+5}`,fill:C.no}));
+    const midX = (HK_X+HK_WAIT_W/2 + MAIN-SN/2)/2;
+    const lbl=el('text',{x:midX,y:targetMidY-8,'text-anchor':'middle',fill:C.no,'font-size':8.5,'font-family':"'IBM Plex Mono',monospace"});
+    lbl.textContent=label; svg.appendChild(lbl);
+  });
+
+  y = ALL_DENY_Y+SH+GAP;
+
+  // ─── ダウンセル等試して再審査する？ ─────────────────────────────
+  varrow(svg,MAIN,ALL_DENY_Y+SH,y,C.no);
+  varrow(svg,MAIN,y,y+GAP,C.neutral); y+=GAP;
+
+  const d6=diamond(svg,MAIN,y+56,106,56,'ダウンセル等試して\n再審査する？'); y+=112;
+
+  const reT=y+GAP;
+  const RE_X=MAIN-320;
+  elbow(svg,d6.left,d6.cy,RE_X,reT,d6.cy,C.yes,'YES');
+  node(svg,RE_X-SN/2,reT,SN,SH,'信販\n再審査',C.fs,'rgba(249,115,22,0.08)','rgba(249,115,22,0.35)',6,11);
+
+  // 再審査 → 本人確認待ち（共通）右端へ水平矢印
+  const RE_HK_MID_Y = reT + SH/2;
+  // 本人確認ボックスを再審査矢印のYまで拡張
+  const newHkH = RE_HK_MID_Y - HK_TOP + 16;
+  hkRect.setAttribute('height', Math.max(HK_H, newHkH));
+  svg.appendChild(el('line',{x1:RE_X-SN/2,y1:RE_HK_MID_Y,x2:HK_X+HK_WAIT_W/2,y2:RE_HK_MID_Y,stroke:C.neutral,'stroke-width':2}));
+  svg.appendChild(el('polygon',{points:`${HK_X+HK_WAIT_W/2},${RE_HK_MID_Y} ${HK_X+HK_WAIT_W/2+10},${RE_HK_MID_Y-5} ${HK_X+HK_WAIT_W/2+10},${RE_HK_MID_Y+5}`,fill:C.neutral}));
+
+  // 再審査→否決（下）
+  varrow(svg,RE_X,reT+SH,reT+SH+GAP,C.no,'否決','right');
+
+  const NO_X=MAIN+320;
+  elbow(svg,d6.right,d6.cy,NO_X,reT,d6.cy,C.no,'NO');
+  const slJY=reT+SH+GAP+SH+GAP;
+  varrow(svg,RE_X,reT+SH+GAP,slJY,C.no);
+  varrow(svg,NO_X,reT,slJY,C.no);
+  svg.appendChild(el('line',{x1:RE_X,y1:slJY,x2:NO_X,y2:slJY,stroke:C.neutral,'stroke-width':1,'stroke-dasharray':'4,3'}));
+  varrow(svg,MAIN,slJY,slJY+GAP,C.neutral); y=slJY+GAP;
+
+  // ─── 信販承認（共通）- 再審査・本人確認後の収束先 ─────────────────
+  // 本人確認ボックスの完全な下（再審査ノードよりさらに下）に配置
+  const AP_H   = 80;
+  const AP_TOP = y;  // 現在のyポジション（自社ローンの手前）
+  // 本人確認ボックス下端からAPボックスまで矢印
+  const hkFinalBottom = Math.max(HK_H, newHkH) + HK_TOP;
+  varrow(svg,HK_X,hkFinalBottom,AP_TOP,C.yes);
+  svg.appendChild(el('rect',{x:HK_X-HK_AP_W/2,y:AP_TOP,width:HK_AP_W,height:AP_H,rx:8,
+    fill:'rgba(34,197,94,0.09)',stroke:C.yes,'stroke-width':1.5}));
+  const apTitle=el('text',{x:HK_X,y:AP_TOP+22,'text-anchor':'middle',fill:C.yes,'font-size':11,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"});
+  apTitle.textContent='✅ 信販承認'; svg.appendChild(apTitle);
+  const apSub=el('text',{x:HK_X,y:AP_TOP+40,'text-anchor':'middle',fill:C.yes,'font-size':9,'font-family':"'IBM Plex Mono',monospace"});
+  apSub.textContent='（共通）'; svg.appendChild(apSub);
+  const apSub2=el('text',{x:HK_X,y:AP_TOP+56,'text-anchor':'middle',fill:C.yes,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});
+  apSub2.textContent='→ 商品？バーへ'; svg.appendChild(apSub2);
+  hkApBottomY = AP_TOP + AP_H;
+
+  // ─── 自社ローンで契約 ────────────────────────────────────────────
+  node(svg,MAIN-95,y,190,SH,'🏦 自社ローンで契約',C.text,'rgba(59,130,246,0.1)','rgba(59,130,246,0.4)',7,12,'bold');
+  const jishaLoanMidY=y+SH/2;
+  // 決済方法→自社ローン直接
+  svg.appendChild(el('line',{x1:jishaFromX,y1:jishaFromY,x2:JISHA_X,y2:jishaFromY,stroke:C.neutral,'stroke-width':2}));
+  svg.appendChild(el('line',{x1:JISHA_X,y1:jishaFromY,x2:JISHA_X,y2:jishaLoanMidY,stroke:C.neutral,'stroke-width':2}));
+  svg.appendChild(el('line',{x1:JISHA_X,y1:jishaLoanMidY,x2:MAIN+95,y2:jishaLoanMidY,stroke:C.neutral,'stroke-width':2}));
+  svg.appendChild(el('polygon',{points:`${MAIN+95},${jishaLoanMidY} ${MAIN+95+9},${jishaLoanMidY-5} ${MAIN+95+9},${jishaLoanMidY+5}`,fill:C.neutral}));
+  const jLbl=el('text',{x:JISHA_X+6,y:jishaFromY-10,'fill':C.textSub,'font-size':9,'font-family':"'IBM Plex Mono',monospace"});
+  jLbl.textContent='自社ローン直接（金銭事故歴など）'; svg.appendChild(jLbl);
+
+  y+=SH; varrow(svg,MAIN,y,y+GAP,C.fs); y+=GAP;
+
+  // ─── RM対応 ─────────────────────────────────────────────────────
+  node(svg,MAIN-95,y,190,SH,'📤 FSがSlackワークフロー送信\n~（覚書締結後・頭金入金まではFSが対応）',C.warn,'rgba(245,158,11,0.05)',C.warn,6,11);
+  const wfX=MAIN+115,wfW=250,wfH=120;
+  svg.appendChild(el('rect',{x:wfX,y:y,width:wfW,height:wfH,rx:6,fill:'rgba(245,158,11,0.04)',stroke:'rgba(245,158,11,0.2)','stroke-width':1,'stroke-dasharray':'4,3'}));
+  const wfT=el('text',{x:wfX+wfW/2,y:y+15,'text-anchor':'middle',fill:C.warn,'font-size':9,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});
+  wfT.textContent='📋 ワークフロー送信内容'; svg.appendChild(wfT);
   ['氏名 & ヨミ / PONSE URL','サービス名','契約金額 / 頭金設定金額','頭金入金予定日','1回目・2回目以降引落金額','身分証 / 緊急連絡先','特記事項'].forEach((ln,i)=>{
-    const t=el('text',{x:wfX+8,y:y+10+i*13,fill:C.textSub,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});t.textContent='・'+ln;svg.appendChild(t);
+    const t=el('text',{x:wfX+10,y:y+30+i*13,fill:C.textSub,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});
+    t.textContent='・'+ln; svg.appendChild(t);
   });
-  // ② RMがワークフロー受信 → 収納代行登録
-  node(svg,cx-80,y,160,SH,'🔔 RMがワークフロー受信\n~収納代行（ワイドネット）登録',C.warn,'rgba(245,158,11,0.06)',C.warn,6,11);y+=SH;
-  varrow(svg,cx,y,y+16,C.warn);y+=16;
-  // ③ その後の管理（3項目）
-  node(svg,cx-80,y,160,72,'📊 RM継続管理\n~毎月の引落確認\n~未引落→現金振込追客\n~滞納管理',C.warn,'rgba(245,158,11,0.06)',C.warn,6,11);y+=72;
-  varrow(svg,cx,y,y+36,C.fs);y+=36;
-  // 商品？バー
-  const barY=y,barX=20,barW=W-40,barH=54;
-  [{x:CASH_X,fromY:cashBottomY,color:C.neutral},{x:CC_X,fromY:ccBottomY,color:C.neutral},{x:LAP,fromY:ap1Y+SH,color:C.yes},{x:s2OkNodeX,fromY:s2OkY+SH,color:C.yes},{x:LRE_OK,fromY:reOkY+SH,color:C.yes}].forEach(({x,fromY,color})=>{
+  y+=SH; varrow(svg,MAIN,y,y+GAP,C.warn); y+=GAP;
+
+  node(svg,MAIN-95,y,190,SH,'🔔 RMがワークフロー受信\n~収納代行（ワイドネット）登録',C.warn,'rgba(245,158,11,0.05)',C.warn,6,11);
+  y+=SH; varrow(svg,MAIN,y,y+GAP,C.warn); y+=GAP;
+
+  node(svg,MAIN-95,y,190,90,'📊 RM継続管理\n~毎月の引落確認\n~未引落 → 現金振込追客\n~滞納管理',C.warn,'rgba(245,158,11,0.05)',C.warn,6,11);
+  y+=90; varrow(svg,MAIN,y,y+GAP*2,C.fs); y+=GAP*2;
+
+  // ─── 商品？バー ──────────────────────────────────────────────────
+  const barY=y,barX=40,barW=W-80,barH=64;
+
+  [
+    {x:CASH_X, fromY:cashBottomY, color:C.neutral},
+    {x:CC_X,   fromY:ccBottomY,   color:C.neutral},
+    {x:HK_X,   fromY:hkApBottomY, color:C.yes},
+  ].forEach(({x,fromY,color})=>{
     svg.appendChild(el('line',{x1:x,y1:fromY,x2:x,y2:barY,stroke:color,'stroke-width':2}));
-    svg.appendChild(el('line',{x1:x,y1:barY,x2:cx,y2:barY,stroke:color,'stroke-width':1,'stroke-dasharray':'5,4'}));
-    svg.appendChild(el('circle',{cx:x,cy:barY,r:4,fill:color}));
+    svg.appendChild(el('line',{x1:x,y1:barY,x2:MAIN,y2:barY,stroke:color,'stroke-width':1,'stroke-dasharray':'5,4'}));
+    svg.appendChild(el('circle',{cx:x,cy:barY,r:5,fill:color}));
   });
-  svg.appendChild(el('rect',{x:barX,y:barY,width:barW,height:barH,rx:12,fill:'rgba(249,115,22,0.18)',stroke:'#f97316','stroke-width':2.5}));
-  const bl=el('text',{x:cx,y:barY+barH/2,'text-anchor':'middle','dominant-baseline':'middle',fill:'#fb923c','font-size':16,'font-weight':800,'font-family':"'Syne','Noto Sans JP',sans-serif"});bl.textContent='商品の分岐';svg.appendChild(bl);
-  const mpX=barX+barW*0.30,vpX=barX+barW*0.70,arrLen=60;
-  varrow(svg,mpX,barY+barH,barY+barH+arrLen,C.mp);varrow(svg,vpX,barY+barH,barY+barH+arrLen,C.vp);
-  [{x:mpX,c:C.mp,t:'MP'},{x:vpX,c:C.vp,t:'VP'}].forEach(({x,c,t})=>{const lbl=el('text',{x:x+8,y:barY+barH+arrLen/2,'dominant-baseline':'middle',fill:c,'font-size':10,'font-weight':600,'font-family':"'IBM Plex Mono',monospace"});lbl.textContent=t;svg.appendChild(lbl);});
+
+  svg.appendChild(el('rect',{x:barX,y:barY,width:barW,height:barH,rx:14,
+    fill:'rgba(249,115,22,0.18)',stroke:'#f97316','stroke-width':2.5}));
+  const bl=el('text',{x:MAIN,y:barY+barH/2,'text-anchor':'middle','dominant-baseline':'middle',
+    fill:'#fb923c','font-size':18,'font-weight':800,'font-family':"'Syne','Noto Sans JP',sans-serif"});
+  bl.textContent='商品は？'; svg.appendChild(bl);
+
+  const mpX=barX+barW*0.28,vpX=barX+barW*0.72,arrLen=80;
+  varrow(svg,mpX,barY+barH,barY+barH+arrLen,C.mp);
+  varrow(svg,vpX,barY+barH,barY+barH+arrLen,C.vp);
+  [{x:mpX,c:C.mp,t:'MP'},{x:vpX,c:C.vp,t:'VP'}].forEach(({x,c,t})=>{
+    const lbl=el('text',{x:x+10,y:barY+barH+arrLen/2,'dominant-baseline':'middle',
+      fill:c,'font-size':11,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});
+    lbl.textContent=t; svg.appendChild(lbl);
+  });
+
   y=barY+barH+arrLen;
-  node(svg,mpX-70,y,140,44,'MPフェーズへ ▶',C.mp,'rgba(59,130,246,0.06)','rgba(59,130,246,0.5)',7,12,'bold');
-  node(svg,vpX-70,y,140,44,'VPフェーズへ ▶',C.vp,'rgba(168,85,247,0.06)','rgba(168,85,247,0.5)',7,12,'bold');
-  y+=44+24;svg.setAttribute('width',W);svg.setAttribute('height',y);
+  node(svg,mpX-80,y,160,54,'MPフェーズへ ▶',C.mp,'rgba(59,130,246,0.06)','rgba(59,130,246,0.5)',7,13,'bold');
+  node(svg,vpX-80,y,160,54,'VPフェーズへ ▶',C.vp,'rgba(168,85,247,0.06)','rgba(168,85,247,0.5)',7,13,'bold');
+
+  y+=54+30;
+  svg.setAttribute('width',W);
+  svg.setAttribute('height',y);
 }
 
 function buildMP(svg){
