@@ -190,7 +190,7 @@ footer{border-top:1px solid var(--site-border);padding:14px 40px;display:flex;al
 
   <!-- Phase 3-B: VP・CS -->
   <div class="phase-col-wrap" data-phase="vp">
-    <div class="phase-lbl cs-branch-lbl-vp" style="border-bottom:2px solid var(--vp);color:var(--vp)">Phase 3-B — VP・CS（声優 役務提供）</div>
+    <div class="phase-lbl cs-branch-lbl-vp" style="border-bottom:2px solid var(--vp);color:var(--vp)">Phase 3-B — VP・CS（声優 役務提供 ＋ 卒業後アフター）</div>
     <svg id="svg-vp" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;font-family:'Noto Sans JP',sans-serif;"></svg>
   </div>
   <div class="h-conn"><svg width="44" height="2" style="overflow:visible"><line x1="0" y1="1" x2="36" y2="1" stroke="#ec4899" stroke-width="2" stroke-dasharray="5,4"/><polygon points="36,1 28,-4 28,6" fill="#ec4899"/></svg></div>
@@ -614,24 +614,24 @@ function buildMP(svg){
     {label:'カラオケ・ストア配信'},
     {label:'TPS',live:true,sub:'タッチポイントStore'},
   ];
-  // MPC（短縮版）。プロデューサー面談の代わりにA&R面談で兼ねる等、回数圧縮。スライドにMPC個別工程の明示がないため通常版を基準に圧縮表記
+  // MPC（PDFのMP通常を基準に、確定差分を適用）
+  // MP→MPC：P面談なし(A&R面談が兼ねる) / ボイトレ 基礎3+実践3 → 基礎1+実践2 / アー写(ジャケ写)なし
   const stepsMPC=[
     {label:'契約・入所'},
     {label:'A&R面談',sub:'※P面談を兼ねる'},
     {label:'STEP UP LIVE',live:true},
-    {label:'ボイトレ①',sub:'予約→前日確認→レッスン→所感'},
-    {label:'ボイトレ②',sub:'予約→前日確認→レッスン→所感'},
-    {label:'ボイトレ③',sub:'予約→前日確認→レッスン→所感'},
+    {label:'ボイトレ①',sub:'基礎：予約→前日確認→レッスン→所感'},
+    {label:'ボイトレ②',sub:'実践：予約→前日確認→レッスン→所感'},
+    {label:'ボイトレ③',sub:'実践：予約→前日確認→レッスン→所感'},
     {label:'REC REHEARSAL LIVE',live:true},
     {label:'TPR',live:true,sub:'タッチポイントREC'},
-    {label:'ジャケ写制作'},
-    {label:'カラオケ・ストア配信'},
+    {label:'カラオケ・ストア配信',sub:'※アー写（ジャケ写）なし'},
     {label:'TPS',live:true,sub:'タッチポイントStore'},
   ];
   const endY1=planCol(mpCX,planTopY,'🎵 MP通常プラン',stepsMP,C.mp);
   const endY2=planCol(mpcCX,planTopY,'🎵 MPCプラン',stepsMPC,C.mp);
   // MPC側の注記
-  noteBox(svg,mpcCX-CW/2,endY2+10,CW,42,['MPCはプラン圧縮版。','スライド基準に通常版から短縮']);
+  noteBox(svg,mpcCX-CW/2,endY2+10,CW,42,['MPC：P面談なし(A&R兼ねる)','ボイトレ基礎1+実践2 / アー写なし']);
   svg.setAttribute('width',W);svg.setAttribute('height',Math.max(endY1,endY2+62)+24);
 }
 
@@ -639,38 +639,170 @@ function buildMP(svg){
 // Phase 3-B — VP（声優）※基盤HTML踏襲（声優役務工程はHTML版が正：本人確認用）
 // ═══════════════════════════════════════════════════════════════════
 function buildVP(svg){
-  const W=660,vpCX=170,vpcCX=490,CW=170,CH_TITLE=28,CH_STEP=36,CH_ARROW=14;let y=20;
-  const dCX=W/2;const dpf=diamond(svg,dCX,y+44,58,40,'プラン選択',C.vp,C.vp);y+=84;
+  // VP・CS：役務本流を VP通常/VPC の2プラン列（直線）で。下にアフター II/III/IV。
+  // 工程語は添付「VPカスタマージャーニー全体図」準拠。VP/VPC差分は確定情報を適用。
+  const W=1040;
+  const vpCX=270, vpcCX=770, CW=280, CH_TITLE=30, CH_STEP=40, CH_ARROW=16;
+  let y=20;
+
+  // タイトル
+  svg.appendChild(Object.assign(el('text',{x:40,y:y+10,fill:C.vp,'font-size':15,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'Ⅰ. 役務提供（入所〜卒業）'}));
+  svg.appendChild(Object.assign(el('text',{x:40,y:y+30,fill:C.textSub,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'※工程の順番は多少前後する場合あり。顧客は必ず1ステップに在籍（休眠/解約は浮島）。'}));
+  y+=44;
+
+  // プラン選択ひし形 → 2列
+  const dCX=W/2;const dpf=diamond(svg,dCX,y+44,60,40,'プラン選択',C.vp,C.vp);y+=84;
   const planTopY=y+30;
   elbow(svg,dpf.left,dpf.cy,vpCX,planTopY,dpf.cy,C.vp,'VP通常');
   elbow(svg,dpf.right,dpf.cy,vpcCX,planTopY,dpf.cy,C.vp,'VPC');
+
   function planCol(cx2,startY,title,steps){
     let cy=startY;
     svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:CH_TITLE,rx:6,fill:'rgba(168,85,247,0.18)',stroke:C.vp,'stroke-width':1.5}));
-    const tt=el('text',{x:cx2,y:cy+CH_TITLE/2,'text-anchor':'middle','dominant-baseline':'middle',fill:C.vp,'font-size':10,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});tt.textContent=title;svg.appendChild(tt);cy+=CH_TITLE;
-    steps.forEach(({label,sub})=>{
+    svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+CH_TITLE/2,'text-anchor':'middle','dominant-baseline':'middle',fill:C.vp,'font-size':11,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"}),{textContent:title}));
+    cy+=CH_TITLE;
+    steps.forEach(({label,sub,start})=>{
       varrow(svg,cx2,cy,cy+CH_ARROW,C.vp);cy+=CH_ARROW;
-      const lns=label.split('\n');const h=Math.max(CH_STEP,lns.length*17+10+(sub?12:0));
-      svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:h,rx:5,fill:'rgba(168,85,247,0.10)',stroke:'rgba(168,85,247,0.4)','stroke-width':1}));
-      lns.forEach((ln,li)=>{const t=el('text',{x:cx2,y:cy+13+li*17,'text-anchor':'middle','dominant-baseline':'middle',fill:C.text,'font-size':11,'font-family':"'Noto Sans JP',sans-serif"});t.textContent=ln;svg.appendChild(t);});
-      if(sub){const st=el('text',{x:cx2,y:cy+h-7,'text-anchor':'middle',fill:C.textSub,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});st.textContent=sub;svg.appendChild(st);}
+      const lns=label.split('\n');const h=Math.max(CH_STEP,lns.length*17+12+(sub?12:0));
+      const bg=start?'rgba(148,163,184,0.10)':'rgba(168,85,247,0.10)';
+      const bd=start?'rgba(148,163,184,0.5)':'rgba(168,85,247,0.4)';
+      svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:h,rx:6,fill:bg,stroke:bd,'stroke-width':1}));
+      lns.forEach((ln,li)=>svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+15+li*17,'text-anchor':'middle','dominant-baseline':'middle',fill:C.text,'font-size':12,'font-weight':600,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+      if(sub)svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+h-8,'text-anchor':'middle',fill:C.textSub,'font-size':9.5,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:sub}));
       cy+=h;
     });
+    // 卒業＝プロジェクト完了
+    varrow(svg,cx2,cy,cy+CH_ARROW,C.is);cy+=CH_ARROW;
+    svg.appendChild(el('rect',{x:cx2-90,y:cy,width:180,height:34,rx:8,fill:'rgba(34,197,94,0.12)',stroke:C.is,'stroke-width':1.5}));
+    svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+17,'text-anchor':'middle','dominant-baseline':'middle',fill:C.is,'font-size':12,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'🎓 卒業＝プロジェクト完了'}));
+    cy+=34;
+    // → アフターへ（点線）
     varrow(svg,cx2,cy,cy+CH_ARROW,C.vp);cy+=CH_ARROW;
-    svg.appendChild(el('rect',{x:cx2-66,y:cy,width:132,height:32,rx:7,fill:'rgba(34,197,94,0.10)',stroke:C.yes,'stroke-width':1.5}));
-    const et=el('text',{x:cx2,y:cy+16,'text-anchor':'middle','dominant-baseline':'middle',fill:C.yes,'font-size':11,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"});et.textContent='🏁 プロジェクト完了';svg.appendChild(et);cy+=32;
-    varrow(svg,cx2,cy,cy+CH_ARROW,C.plus);cy+=CH_ARROW;
-    svg.appendChild(el('rect',{x:cx2-66,y:cy,width:132,height:28,rx:6,fill:'rgba(236,72,153,0.08)',stroke:C.plus,'stroke-width':1,'stroke-dasharray':'4,3'}));
-    const pt=el('text',{x:cx2,y:cy+14,'text-anchor':'middle','dominant-baseline':'middle',fill:C.plus,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"});pt.textContent='→ MP+ 招待（完了者）';svg.appendChild(pt);cy+=28;
+    svg.appendChild(el('rect',{x:cx2-66,y:cy,width:132,height:28,rx:6,fill:'rgba(168,85,247,0.08)',stroke:C.vp,'stroke-width':1,'stroke-dasharray':'4,3'}));
+    svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+14,'text-anchor':'middle','dominant-baseline':'middle',fill:C.vp,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'↓ アフター（Ⅱ〜Ⅳ）へ'}));
+    cy+=28;
     return cy;
   }
-  const stepsVP=[{label:'オリエン面談（O面談）'},{label:'キャラクター制作面談\n（C面談）'},{label:'基礎ボイトレ ×3回',sub:'各回：予約→前日確認→レッスン→所感'},{label:'ボイサン（VS）収録'},{label:'実践ボイトレ ×3回',sub:'各回：予約→前日確認→レッスン→所感'},{label:'宣材撮影'},{label:'ドラマ収録前顔合わせ'},{label:'ボイスドラマ収録'},{label:'P面談 / S面談\nD面談 / L面談'}];
-  const stepsVPC=[{label:'オリエン面談（O面談）'},{label:'キャラクター制作面談\n（C面談）'},{label:'基礎ボイトレ ×2回',sub:'各回：予約→前日確認→レッスン→所感'},{label:'実践ボイトレ（掛け合い）×2回',sub:'各回：予約→前日確認→レッスン→所感'},{label:'ドラマ収録前顔合わせ'},{label:'ボイスドラマ収録'},{label:'P面談 / S面談\nD面談 / L面談'}];
+
+  // VP通常（画像準拠の工程語。ボイトレは①②セリフ・ナレ→③④サンプル練習→⑤⑥掛け合い）
+  const stepsVP=[
+    {label:'契約・入所',start:true},
+    {label:'オリエンテーション面談'},
+    {label:'プロデューサー面談'},
+    {label:'ボイトレ①',sub:'セリフ・ナレーション'},
+    {label:'ボイトレ②',sub:'セリフ・ナレーション'},
+    {label:'キャラクター制作'},
+    {label:'宣材写真撮影'},
+    {label:'サンプル原稿お渡し'},
+    {label:'ボイトレ③',sub:'サンプル練習'},
+    {label:'ボイトレ④',sub:'サンプル練習'},
+    {label:'ボイスサンプル収録'},
+    {label:'ボイスドラマ面談'},
+    {label:'ボイトレ⑤',sub:'掛け合い'},
+    {label:'ボイトレ⑥',sub:'掛け合い'},
+    {label:'ボイスドラマ収録'},
+  ];
+  // VPC（確定差分）：基礎2+実践(掛け合い)2 / ボイスサンプル収録なし / 宣材写真撮影なし
+  const stepsVPC=[
+    {label:'契約・入所',start:true},
+    {label:'オリエンテーション面談'},
+    {label:'プロデューサー面談'},
+    {label:'ボイトレ①',sub:'基礎'},
+    {label:'ボイトレ②',sub:'基礎'},
+    {label:'キャラクター制作'},
+    {label:'サンプル原稿お渡し',sub:'※宣材写真撮影なし'},
+    {label:'ボイスドラマ面談'},
+    {label:'ボイトレ③',sub:'掛け合い'},
+    {label:'ボイトレ④',sub:'掛け合い'},
+    {label:'ボイスドラマ収録',sub:'※ボイスサンプル収録なし'},
+  ];
   const endY1=planCol(vpCX,planTopY,'🎤 VP通常プラン',stepsVP);
   const endY2=planCol(vpcCX,planTopY,'🎤 VPCプラン',stepsVPC);
-  svg.setAttribute('width',W);svg.setAttribute('height',Math.max(endY1,endY2)+24);
-}
 
+  // 離脱浮島（2列の間・上部に小さく）
+  const islX=dCX, islY=planTopY+10;
+  svg.appendChild(el('rect',{x:islX-92,y:islY,width:184,height:46,rx:8,fill:'rgba(245,158,11,0.06)',stroke:C.warn,'stroke-width':1.3,'stroke-dasharray':'5,4'}));
+  svg.appendChild(Object.assign(el('text',{x:islX,y:islY+18,'text-anchor':'middle',fill:C.warn,'font-size':11,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'休眠・滞留 ／ 解約・終了'}));
+  svg.appendChild(Object.assign(el('text',{x:islX,y:islY+34,'text-anchor':'middle',fill:C.textSub,'font-size':9.5,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'浮島（非接続 ／ 終端）'}));
+
+  let yA=Math.max(endY1,endY2)+30;
+
+  // ═══ Ⅱ. アフター：Discord起点の接点導線 ═══
+  svg.appendChild(Object.assign(el('text',{x:40,y:yA+6,fill:C.vp,'font-size':14,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'Ⅱ. アフター：イベント案内に触れる接点導線（Discord起点）'}));
+  yA+=24;
+  const af2=[{t:'公式Discord参加',s:'コミュニティの中心'},{t:'お知らせ／告知CH',s:'案内を確認'},{t:'参加申込',s:'Discordフォーム直応募'}];
+  const a2W=300,a2Gap=34,a2Y=yA;
+  af2.forEach((d,i)=>{
+    const x=40+i*(a2W+a2Gap);
+    node(svg,x,a2Y,a2W,54,d.t+'\n~'+d.s,C.text,'rgba(168,85,247,0.08)','rgba(168,85,247,0.4)',8,13,'bold');
+    if(i<af2.length-1){
+      svg.appendChild(el('line',{x1:x+a2W,y1:a2Y+27,x2:x+a2W+a2Gap-7,y2:a2Y+27,stroke:C.vp,'stroke-width':2}));
+      svg.appendChild(el('polygon',{points:`${x+a2W+a2Gap},${a2Y+27} ${x+a2W+a2Gap-8},${a2Y+22} ${x+a2W+a2Gap-8},${a2Y+32}`,fill:C.vp}));
+    }
+  });
+  yA=a2Y+54+20;
+  const memo1=['▶ 二段構えのDiscord参加フォロー（実施中）','① コーデが各自アカウント作成・参加し、面談時に画面共有しながら参加案内。','② 「サクッとDiscordに入っちゃおうZoom」開催（6/17・6/20）。5分で合流、出入り自由。','※ VPのイベント参加申込は、Discord掲載フォームからの直応募がほとんど（一部のみMP+アプリと連携）。'];
+  const m1H=memo1.length*17+16;
+  svg.appendChild(el('rect',{x:40,y:yA,width:W-80,height:m1H,rx:8,fill:'rgba(245,158,11,0.06)',stroke:'rgba(245,158,11,0.3)','stroke-width':1}));
+  memo1.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:56,y:yA+20+i*17,fill:i===0?C.warn:C.text,'font-size':i===0?11:10,'font-weight':i===0?700:400,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+  yA+=m1H+30;
+
+  // ═══ Ⅲ. アフター：使える4機能群 ═══
+  svg.appendChild(Object.assign(el('text',{x:40,y:yA+6,fill:C.vp,'font-size':14,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'Ⅲ. アフター：使える4機能群（個別コンテンツ）'}));
+  yA+=24;
+  function groupBox(gx,gy,gw,title,items){
+    let ih=0;items.forEach(it=>ih+=(it.sub?44:36)+10);
+    const gh=ih+44;
+    svg.appendChild(el('rect',{x:gx,y:gy,width:gw,height:gh,rx:10,fill:'rgba(168,85,247,0.04)',stroke:'rgba(168,85,247,0.3)','stroke-width':1.5}));
+    svg.appendChild(Object.assign(el('text',{x:gx+16,y:gy+24,fill:C.vp,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:title}));
+    let iy=gy+36;const innerW=gw-32,halfW=(innerW-12)/2;let i=0;
+    while(i<items.length){
+      const it=items[i];const h=it.sub?44:36;
+      if(it.full){
+        node(svg,gx+16,iy,innerW,h,it.sub?it.label+'\n~'+it.sub:it.label,C.text,'rgba(168,85,247,0.08)','rgba(168,85,247,0.35)',7,11.5,it.bold?'bold':'normal');
+        iy+=h+10;i+=1;
+      }else{
+        const it2=items[i+1];
+        node(svg,gx+16,iy,halfW,h,it.sub?it.label+'\n~'+it.sub:it.label,C.text,'rgba(168,85,247,0.08)','rgba(168,85,247,0.35)',7,11.5);
+        if(it2){const h2=it2.sub?44:36;node(svg,gx+16+halfW+12,iy,halfW,Math.max(h,h2),it2.sub?it2.label+'\n~'+it2.sub:it2.label,C.text,'rgba(168,85,247,0.08)','rgba(168,85,247,0.35)',7,11.5);}
+        iy+=h+10;i+=2;
+      }
+    }
+    return gy+gh;
+  }
+  const colGap=40,gw=(W-80-colGap)/2,gLx=40,gRx=40+gw+colGap;
+  const leftItems=[{label:'合同交流会(対面)'},{label:'練習会・朗読会'},{label:'ASTRO Bar./LAB.'},{label:'OLUU・朗読劇・YT'},{label:'専用コミュニティチャット（Discord内交流）',full:true},{label:'Voice Letter（定期会報）',full:true,bold:true}];
+  const rightItems=[{label:'出演依頼'},{label:'お仕事紹介'},{label:'メディア出演・作品応募',full:true},{label:'専属担当の継続サポート',sub:'活動相談・スケジュール・SNS',full:true,bold:true}];
+  const bL=groupBox(gLx,yA,gw,'コミュニティ・場',leftItems);
+  const bR=groupBox(gRx,yA,gw,'実践・仕事／継続サポート',rightItems);
+  yA=Math.max(bL,bR)+20;
+  const upItems=[{label:'追加ボイトレ/SP/ドラマ'},{label:'オリジナル楽曲制作'},{label:'VTuberアバター制作'}];
+  const upH=36+18;
+  svg.appendChild(el('rect',{x:40,y:yA,width:W-80,height:upH+44,rx:10,fill:'rgba(168,85,247,0.04)',stroke:'rgba(168,85,247,0.3)','stroke-width':1.5}));
+  svg.appendChild(Object.assign(el('text',{x:56,y:yA+24,fill:C.vp,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'表現・制作（追加オプション＝有償アップセル）'}));
+  const upW=(W-80-32-24)/3;
+  upItems.forEach((it,i)=>node(svg,56+i*(upW+12),yA+36,upW,36,it.label,C.text,'rgba(168,85,247,0.08)','rgba(168,85,247,0.35)',7,11.5));
+  svg.appendChild(Object.assign(el('text',{x:56,y:yA+36+36+16,fill:C.textSub,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'▶ Discord・活動相談を入口に担当コーデ経由で個別案内・受注。楽曲／VTuber系はMP+経済圏との接続点（VP→MP+送客の動線も兼ねる）。'}));
+  yA+=upH+44+30;
+
+  // ═══ Ⅳ. 実施中のイベント施策メモ ═══
+  svg.appendChild(Object.assign(el('text',{x:40,y:yA+6,fill:C.vp,'font-size':14,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'Ⅳ. 実施中のイベント施策メモ'}));
+  yA+=24;
+  function memoBox(mx,my,mw,lines){
+    const mh=lines.length*16+18;
+    svg.appendChild(el('rect',{x:mx,y:my,width:mw,height:mh,rx:8,fill:'rgba(245,158,11,0.06)',stroke:'rgba(245,158,11,0.3)','stroke-width':1}));
+    lines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:mx+14,y:my+20+i*16,fill:i===0?C.warn:C.text,'font-size':i===0?11:10,'font-weight':i===0?700:400,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+    return my+mh;
+  }
+  const mw2=(W-80-colGap)/2;
+  const mb1=memoBox(40,yA,mw2,['▶ VP・MP合同交流会（対面）','・6/28、apraオフィス東京・名古屋の2拠点','・自己紹介／どんどんゲーム／交流／記念撮影','・応募はDiscord掲載フォーム（一部MP+連携）','・狙い：活動者の横の繋がり創出、活動の','　きっかけ・刺激。売上/アカウント獲得にも接続']);
+  const mb2=memoBox(40+mw2+colGap,yA,mw2,['▶ ASTRO Bar.×VP運営コラボ','・台本掛け合い＋マイクを使う実戦的な演技','　体験／ゲーム・アニソンカラオケで交流','・ASTRO Bar.へのVP流入が限定的な現状を','　踏まえ、体験のきっかけづくりとして実施','・狙い：流入促進／活性化／ニーズ収集']);
+  yA=Math.max(mb1,mb2)+16;
+  const mb3=memoBox(40,yA,W-80,['▶ 背景課題（なぜアフター施策を増やすか）','・継続的な活動機会が不足し、PJ完了後に活動できていない層が多い。→活動機会の創出とモチベ向上が狙い。','・Discordは Notion掲示板から完全移行し、お知らせ／告知の一次窓口に。今後のイベント募集もDiscord起点。']);
+  yA=mb3+24;
+
+  svg.setAttribute('width',W);svg.setAttribute('height',yA);
+}
 // ═══════════════════════════════════════════════════════════════════
 // Phase 4 — MP+（卒業後 / 非契約者の受け皿）※スライド2枚目準拠
 // 5流入経路：①不合格属性 ②面談前辞退 ③面談後辞退 ④否決者 ⑤完了者(招待)
@@ -678,15 +810,16 @@ function buildVP(svg){
 // ═══════════════════════════════════════════════════════════════════
 function buildPlus(svg){
   const W=480,LX=40,NW=300;let y=20;
-  // 注記（冒頭）
-  noteBox(svg,LX,y,NW,52,['MP+への流入は本流（FS/CS）が大元。','ここでは経路のみ表示。実線接続は別議論。']);
-  y+=52+24;
+  // 注記（冒頭）：本流の流れを明示
+  noteBox(svg,LX,y,NW,66,['本流：応募→FS面談→契約→MP/VP→進行中。','MP契約者以外も含め、下記5経路でMP+へ流入。','大元はFS/CS。実線接続は別議論。']);
+  y+=66+24;
+  // PDF「MP契約者以外のMP+流入経路」準拠（番号はPDF掲載順）
   const routes=[
-    {n:'①',label:'不合格属性',from:'FS面談 不合格（MP・VP）'},
+    {n:'①',label:'不合格属性',from:'FS面談で不合格（MP・VP）'},
     {n:'②',label:'面談前辞退者',from:'FS面談前に辞退（MP・VP）'},
-    {n:'③',label:'面談後辞退者',from:'FS面談後に辞退（MP・VP）'},
-    {n:'④',label:'否決者',from:'信販等で否決（VP）'},
-    {n:'⑤',label:'完了者（招待）',from:'CS役務完了→招待（VP/MP）'},
+    {n:'③',label:'完了者（招待）',from:'CS役務完了 → 招待（VP）'},
+    {n:'④',label:'面談後辞退者',from:'FS面談後に辞退（MP・VP）'},
+    {n:'⑤',label:'否決者',from:'信販等で否決（VP）'},
   ];
   const rH=48,rGap=20;
   // 右側に縦バスを通す（ボックス右端より右）。各ボックス右辺から横線→縦バス→合流点
@@ -726,7 +859,7 @@ function buildPlus(svg){
     const t=el('text',{x:mergeNodeX+18,y:y+36+i*15,fill:C.textSub,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"});t.textContent=ln;svg.appendChild(t);
   });
   y+=64+18;
-  noteBox(svg,LX,y,NW,40,['※ MP契約者は役務完了後そのままMP+へ。','非契約者は上記①〜④の経路で流入。']);
+  noteBox(svg,LX,y,NW,40,['※ MP契約者は役務完了後そのままMP+へ。','非契約者は①②④⑤の経路、完了者③は招待で流入。']);
   y+=40+20;
   svg.setAttribute('width',W);svg.setAttribute('height',y);
 }
