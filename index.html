@@ -271,11 +271,19 @@ const SVG_NS='http://www.w3.org/2000/svg';
 const C={mk:'#06b6d4',is:'#22c55e',fs:'#f97316',mp:'#3b82f6',vp:'#a855f7',plus:'#ec4899',rm:'#ef4444',yes:'#22c55e',no:'#ef4444',neutral:'#94a3b8',nodeBg:'#1a1d2e',nodeBorder:'#2e3348',dBg:'#1e2135',dBorder:'#e2c86e',dText:'#f0d060',text:'#e2e8f0',textSub:'#94a3b8',warn:'#f59e0b',warnBg:'rgba(245,158,11,0.08)',dead:'#ef4444',deadBg:'rgba(239,68,68,0.07)',noteBorder:'rgba(226,200,110,0.3)',noteBg:'rgba(226,200,110,0.05)',noteText:'#c9a84c'};
 function el(tag,attrs={}){const e=document.createElementNS(SVG_NS,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);return e;}
 const COUNT_REGISTRY=[]; // 全ノード自動登録 {svg, rect, key, name}
-let __nodeSeq=0;
+const __svgSeq={}; // SVGごとの連番（フェーズ内で安定させ、他フェーズ追加の影響を受けない）
+function __keyFor(svg){const id=svg&&svg.id?svg.id:'svg';__svgSeq[id]=(__svgSeq[id]||0)+1;return id.replace(/^svg-/,'')+'_'+__svgSeq[id];}
+// 矩形を直接描くノード（planCol等）用の登録ヘルパー
+function registerRect(svg,x,y,w,h,name){
+  const rect={cx:x+w/2,top:y,bottom:y+h,left:x,right:x+w,w,h};
+  rect.__key=__keyFor(svg);rect.__name=name;rect.__svg=svg;
+  COUNT_REGISTRY.push({svg,rect,key:rect.__key,name});
+  return rect;
+}
 function node(svg,x,y,w,h,label,color,bgColor,borderColor,r=7,fontSize=12,fontWeight='normal'){const g=el('g');g.appendChild(el('rect',{x,y,width:w,height:h,rx:r,ry:r,fill:bgColor,stroke:borderColor,'stroke-width':1.5}));const lines=label.split('\n');const lineH=fontSize*1.4;const totalH=lines.length*lineH;lines.forEach((ln,i)=>{const isSub=ln.startsWith('~');const txt=el('text',{x:x+w/2,y:y+(h-totalH)/2+i*lineH+(isSub?fontSize*0.85:fontSize),'text-anchor':'middle','dominant-baseline':'auto',fill:isSub?C.textSub:color,'font-size':isSub?fontSize*0.82:fontSize,'font-weight':fontWeight,'font-family':"'Noto Sans JP', sans-serif"});txt.textContent=isSub?ln.slice(1):ln;g.appendChild(txt);});svg.appendChild(g);const rect={cx:x+w/2,top:y,bottom:y+h,left:x,right:x+w,w,h};
-  // 自動登録：ラベル先頭行（記号除去）を表示名に、連番でユニークキー
+  // 自動登録：ラベル先頭行（記号除去）を表示名に、SVG単位連番でキー
   const firstLine=lines[0].replace(/^[^\wぁ-んァ-ヶ一-龠]+/,'').trim()||lines[0];
-  __nodeSeq++;rect.__key='n'+__nodeSeq;rect.__name=firstLine;rect.__svg=svg;
+  rect.__key=__keyFor(svg);rect.__name=firstLine;rect.__svg=svg;
   COUNT_REGISTRY.push({svg,rect,key:rect.__key,name:firstLine});
   return rect;}
 function nodeStart(svg,x,y,w,h,label,color){const g=el('g');g.appendChild(el('rect',{x,y,width:w,height:h,rx:h/2,ry:h/2,fill:`rgba(${hexToRgb(color)},0.1)`,stroke:color,'stroke-width':1.5}));const t=el('text',{x:x+w/2,y:y+h/2,'text-anchor':'middle','dominant-baseline':'middle',fill:color,'font-size':11,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});t.textContent=label;g.appendChild(t);svg.appendChild(g);return{cx:x+w/2,top:y,bottom:y+h,left:x,right:x+w,w,h};}
@@ -720,12 +728,14 @@ function buildMP(svg){
       const bg=live?'rgba(236,72,153,0.10)':'rgba(59,130,246,0.10)';
       const bd=live?'rgba(236,72,153,0.45)':'rgba(59,130,246,0.4)';
       svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:h,rx:5,fill:bg,stroke:bd,'stroke-width':1}));
+      registerRect(svg,cx2-CW/2,cy,CW,h,title.replace(/^[^\wぁ-んァ-ヶ一-龠]+/,'')+'｜'+lns[0]);
       lns.forEach((ln,li)=>{const t=el('text',{x:cx2,y:cy+13+li*17,'text-anchor':'middle','dominant-baseline':'middle',fill:C.text,'font-size':11,'font-family':"'Noto Sans JP',sans-serif"});t.textContent=ln;svg.appendChild(t);});
       if(sub){const st=el('text',{x:cx2,y:cy+h-7,'text-anchor':'middle',fill:C.textSub,'font-size':9,'font-family':"'Noto Sans JP',sans-serif"});st.textContent=sub;svg.appendChild(st);}
       cy+=h;
     });
     varrow(svg,cx2,cy,cy+CH_ARROW,col);cy+=CH_ARROW;
     svg.appendChild(el('rect',{x:cx2-66,y:cy,width:132,height:32,rx:7,fill:'rgba(34,197,94,0.10)',stroke:C.yes,'stroke-width':1.5}));
+    registerRect(svg,cx2-66,cy,132,32,title.replace(/^[^\wぁ-んァ-ヶ一-龠]+/,'')+'｜プロジェクト完了');
     const et=el('text',{x:cx2,y:cy+16,'text-anchor':'middle','dominant-baseline':'middle',fill:C.yes,'font-size':11,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"});et.textContent='🏁 プロジェクト完了';svg.appendChild(et);cy+=32;
     // 完了 → MP+（卒業生招待）への点線注記
     varrow(svg,cx2,cy,cy+CH_ARROW,C.plus);cy+=CH_ARROW;
@@ -804,6 +814,7 @@ function buildVP(svg){
       const bg=start?'rgba(148,163,184,0.10)':'rgba(168,85,247,0.10)';
       const bd=start?'rgba(148,163,184,0.5)':'rgba(168,85,247,0.4)';
       svg.appendChild(el('rect',{x:cx2-CW/2,y:cy,width:CW,height:h,rx:6,fill:bg,stroke:bd,'stroke-width':1}));
+      registerRect(svg,cx2-CW/2,cy,CW,h,title.replace(/^[^\wぁ-んァ-ヶ一-龠]+/,'')+'｜'+lns[0]);
       lns.forEach((ln,li)=>svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+15+li*17,'text-anchor':'middle','dominant-baseline':'middle',fill:C.text,'font-size':12,'font-weight':600,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
       if(sub)svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+h-8,'text-anchor':'middle',fill:C.textSub,'font-size':9.5,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:sub}));
       cy+=h;
@@ -811,6 +822,7 @@ function buildVP(svg){
     // 卒業＝プロジェクト完了
     varrow(svg,cx2,cy,cy+CH_ARROW,C.is);cy+=CH_ARROW;
     svg.appendChild(el('rect',{x:cx2-90,y:cy,width:180,height:34,rx:8,fill:'rgba(34,197,94,0.12)',stroke:C.is,'stroke-width':1.5}));
+    registerRect(svg,cx2-90,cy,180,34,title.replace(/^[^\wぁ-んァ-ヶ一-龠]+/,'')+'｜卒業＝プロジェクト完了');
     svg.appendChild(Object.assign(el('text',{x:cx2,y:cy+17,'text-anchor':'middle','dominant-baseline':'middle',fill:C.is,'font-size':12,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'🎓 卒業＝プロジェクト完了'}));
     cy+=34;
     // → アフターへ（点線）
@@ -964,6 +976,7 @@ function buildPlus(svg){
   const routeMidYs=[];
   routes.forEach(({n,label,from})=>{
     svg.appendChild(el('rect',{x:LX,y:y,width:NW,height:rH,rx:7,fill:'rgba(236,72,153,0.10)',stroke:C.plus,'stroke-width':1.3}));
+    registerRect(svg,LX,y,NW,rH,n+' '+label);
     const t1=el('text',{x:LX+16,y:y+19,fill:C.plus,'font-size':14,'font-weight':700,'font-family':"'IBM Plex Mono',monospace"});t1.textContent=n;svg.appendChild(t1);
     const t2=el('text',{x:LX+42,y:y+19,fill:C.text,'font-size':12,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"});t2.textContent=label;svg.appendChild(t2);
     const t3=el('text',{x:LX+42,y:y+37,fill:C.textSub,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"});t3.textContent=from;svg.appendChild(t3);
