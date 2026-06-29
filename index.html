@@ -1101,8 +1101,79 @@ function buildPlus(svg){
   vtLines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*16,fill:C.text,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
   ry+=vtH+20;
 
+  // ── ⑥ 面談の導線（MP外ユーザー＝不合格属性が主対象）──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'⑥ 面談の導線（MP外ユーザー）'}));
+  ry+=16;
+  const route=[
+    {t:'MP応募',s:''},
+    {t:'不合格',s:'IS判定'},
+    {t:'事務局掛け合い\nライブ出演PJ案内',s:''},
+    {t:'面談',s:'録画マスト'},
+    {t:'ボイトレ3回\n申込',s:'参加希望者'},
+  ];
+  const rcw=(RW-4*10)/5;
+  route.forEach((r,i)=>{
+    const rx=RX+i*(rcw+10);
+    registerRect(svg,rx,ry,rcw,48,'面談導線:'+r.t.replace(/\n/g,''));
+    svg.appendChild(el('rect',{x:rx,y:ry,width:rcw,height:48,rx:6,fill:'rgba(236,72,153,0.09)',stroke:C.plus,'stroke-width':1.1}));
+    const lns=r.t.split('\n');
+    lns.forEach((ln,li)=>svg.appendChild(Object.assign(el('text',{x:rx+rcw/2,y:ry+ (r.s? (lns.length>1?15:20):24) +li*13,'text-anchor':'middle',fill:C.text,'font-size':10,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+    if(r.s)svg.appendChild(Object.assign(el('text',{x:rx+rcw/2,y:ry+42,'text-anchor':'middle',fill:C.textSub,'font-size':8.5,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:r.s}));
+    if(i<route.length-1){
+      svg.appendChild(el('line',{x1:rx+rcw,y1:ry+24,x2:rx+rcw+10,y2:ry+24,stroke:C.plus,'stroke-width':1.5}));
+      svg.appendChild(el('polygon',{points:`${rx+rcw+10},${ry+24} ${rx+rcw+4},${ry+20} ${rx+rcw+4},${ry+28}`,fill:C.plus}));
+    }
+  });
+  ry+=48+8;
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+10,fill:C.textSub,'font-size':9.5,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'※ 月40件規模の接点（セールスでなく単純接点）。録画は文字起こしし全記録が目的。'}));
+  ry+=24;
+
+  // ── LUMINA移行の注記（面談施策は縮小中）──
+  const lumNote=['▶ 【最新】面談施策は LUMINA へ切り替え中。','　 タッチポイント面談・セールス面談の件数は縮小傾向（ほぼ面談をやっていない状態へ）。','　 上の面談数値（190/66）は移行前の規模感として据え置き表示。'];
+  const lnH=lumNote.length*16+16;
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:lnH,rx:8,fill:'rgba(245,158,11,0.07)',stroke:C.warn,'stroke-width':1.2}));
+  lumNote.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*16,fill:i===0?C.warn:C.text,'font-size':i===0?11:10,'font-weight':i===0?700:400,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+  ry+=lnH+24;
+
+  // ── LUMINA（次の打ち手）──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'⑦ LUMINA（次の集客コンテンツ）'}));
+  ry+=16;
+  registerRect(svg,RX,ry,RW,48,'LUMINA');
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:48,rx:8,fill:'rgba(124,92,252,0.10)',stroke:'rgba(124,92,252,0.5)','stroke-width':1.3}));
+  svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20,fill:'#a78bfa','font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'LUMINA — 歌唱診断ライトコンテンツ'}));
+  svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+37,fill:C.textSub,'font-size':9.5,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'好きな歌を送るとAIが歌唱診断→講師FB→実際にレッスン（ボイトレ潜在層向け）'}));
+  ry+=48+6;
+  const lumLines=['● LUMINAが整ったら、その手前のさらにライトなコンテンツも検討','● ボイトレニーズの潜在層に訴求し、アプラの顧客数を増やす狙い','● 課題：LUMINA単体だと「ボイトレしませんか？」となり顕在層しか取れない'];
+  const lumH=lumLines.length*16+16;
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:lumH,rx:8,fill:'rgba(124,92,252,0.05)',stroke:'rgba(124,92,252,0.3)','stroke-width':1}));
+  lumLines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*16,fill:C.text,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+  ry+=lumH+24;
+
+  // ── OL施策の実態（"まに"ヒアリング 2026/06/29）──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'⑧ OL施策の運用実態（“まに”ヒアリング 6/29）'}));
+  ry+=16;
+  const maniLines=[
+    '● 新規（未経験者）にやってもらうのは強いが、継続してもらうのが弱い',
+    '● 開催KPI 2,000 はまに個人が設計（例「前月から継続90%だとXX件」）',
+    '　 メンバーと一緒に考えることもあるが、結果的にまにが考えている',
+    '● 大枠は ①企画を考える → ②打つ（施策アナウンス/リマインド） → ③背中押し',
+    '　 最終は手動(LINE)送付。最後の1週間でバイネームの背中押し',
+    '　 直近何ヶ月かで動いてくれた人に絞る（前の人に送って1UU取るより効率的）',
+    '● 企画を考える時間は人による。セールスの受けは名古屋さんが設計',
+    '● 月末の追い込みでLINE工数が取られる／よくある質問はOチームへ',
+    '● 施策単位の対応は（属人化で）分からないから触らない方針',
+    '● 上流はこちらで持ち、メンバーがやることは分かりやすく（藤村）',
+    '● みんながやるべきこと：セールスは面談、OLは企画から1人でやり切る',
+  ];
+  const maniH=maniLines.length*15.5+18;
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:maniH,rx:8,fill:'rgba(236,72,153,0.05)',stroke:'rgba(236,72,153,0.35)','stroke-width':1}));
+  maniLines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*15.5,fill:C.text,'font-size':9.5,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+  ry+=maniH+8;
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+10,fill:C.textSub,'font-size':9,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'※ 23卒2年目の頃よりやりづらくなっている（人が多い／MP+の方針が定まりきっていない）。'}));
+  ry+=26;
+
   // 出典注記
-  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.textSub,'font-size':9,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'出典：事業オペレーション_MP+ スライド3枚目（伊藤）／経営戦略ch'}));
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.textSub,'font-size':9,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'出典：事業オペレーション_MP+ スライド3枚目（伊藤）／経営戦略ch（まにヒアリング・面談導線・LUMINA 2026/06）'}));
   ry+=20;
 
   y=Math.max(leftBottom,ry);
