@@ -404,7 +404,18 @@ function importCounts(file){
 }
 function clearCounts(){if(confirm('入力した件数をすべて消去しますか？')){COUNTS={};saveStore();applyCounts();}}
 
-function loadCounts(){loadStore();applyCounts();}
+// スライド「事業オペレーション_MP+」3枚目で確定した数値のプリセット（初回のみ適用）
+const PRESET_COUNTS={
+  plus_7:190,  // タッチポイント面談（活動相談） 190/月
+  plus_8:66,   // セールス面談 66/月
+  plus_9:15    // ストア商品 15
+};
+function loadCounts(){
+  loadStore();
+  // localStorageが空（初回）のときだけプリセットを反映
+  if(Object.keys(COUNTS).length===0){COUNTS=Object.assign({},PRESET_COUNTS);saveStore();}
+  applyCounts();
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // Phase 0 — MKT（マーケティング）
@@ -1011,7 +1022,91 @@ function buildPlus(svg){
   y+=64+18;
   noteBox(svg,LX,y,NW,40,['※ MP契約者は役務完了後そのままMP+へ。','非契約者は①②④⑤の経路、完了者③は招待で流入。']);
   y+=40+20;
-  svg.setAttribute('width',W);svg.setAttribute('height',y);
+  const leftBottom=y; // 左カラム（流入経路）の最下端
+
+  // ═══════════════════════════════════════════════════════════════
+  // 施策運用フロー（伊藤さん 3枚目：MP+内の施策・数値・運用）※右カラム
+  // ═══════════════════════════════════════════════════════════════
+  const RX=LX+NW+80;        // 右カラムX
+  const RW=440;             // 右カラム幅
+  let ry=20;
+  // セクション見出し
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+6,fill:C.plus,'font-size':14,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'施策運用フロー（MP+内の集客・育成）'}));
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+24,fill:C.textSub,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'既存MP+ユーザーに施策を打ち、面談・企画・楽曲/ボイトレを促す運用。'}));
+  ry+=40;
+
+  // ── アーティスト面談（月次件数）──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'① アーティスト面談（月次）'}));
+  ry+=16;
+  const mtgW=(RW-16)/2;
+  registerRect(svg,RX,ry,mtgW,50,'TP面談（活動相談）');
+  svg.appendChild(el('rect',{x:RX,y:ry,width:mtgW,height:50,rx:7,fill:'rgba(236,72,153,0.10)',stroke:C.plus,'stroke-width':1.2}));
+  svg.appendChild(Object.assign(el('text',{x:RX+mtgW/2,y:ry+20,'text-anchor':'middle',fill:C.text,'font-size':12,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'タッチポイント面談'}));
+  svg.appendChild(Object.assign(el('text',{x:RX+mtgW/2,y:ry+37,'text-anchor':'middle',fill:C.textSub,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'活動相談'}));
+  registerRect(svg,RX+mtgW+16,ry,mtgW,50,'セールス面談');
+  svg.appendChild(el('rect',{x:RX+mtgW+16,y:ry,width:mtgW,height:50,rx:7,fill:'rgba(236,72,153,0.10)',stroke:C.plus,'stroke-width':1.2}));
+  svg.appendChild(Object.assign(el('text',{x:RX+mtgW+16+mtgW/2,y:ry+20,'text-anchor':'middle',fill:C.text,'font-size':12,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'セールス面談'}));
+  svg.appendChild(Object.assign(el('text',{x:RX+mtgW+16+mtgW/2,y:ry+37,'text-anchor':'middle',fill:C.textSub,'font-size':10,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:'楽曲・商品の提案'}));
+  ry+=50+8;
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+10,fill:C.textSub,'font-size':9.5,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'※他にA&R面談・クリエイター面談等もあり（売上文脈のため一旦割愛）'}));
+  ry+=24;
+
+  // ── ストア商品 ──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'② ストア商品'}));
+  ry+=16;
+  registerRect(svg,RX,ry,RW,44,'ストア商品');
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:44,rx:7,fill:'rgba(236,72,153,0.08)',stroke:'rgba(236,72,153,0.4)','stroke-width':1.2}));
+  svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+18,fill:C.text,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'ストア商品ラインナップ'}));
+  svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+35,fill:C.textSub,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'問合せ数・購入数の推移は商品ごとに集計（一部未提出）'}));
+  ry+=44+24;
+
+  // ── 毎月の企画（3ユニット）──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'③ 毎月の企画（各ユニット 2〜5件/月）'}));
+  ry+=16;
+  const unitW=(RW-16*2)/3;
+  const units=[{t:'OLユニット',s:'AD系施策が主'},{t:'セールスユニット',s:'セミナー系が主'},{t:'ボイトレ大臣',s:'イベント系が主'}];
+  units.forEach((u,i)=>{
+    const ux=RX+i*(unitW+16);
+    registerRect(svg,ux,ry,unitW,52,u.t+' 企画');
+    svg.appendChild(el('rect',{x:ux,y:ry,width:unitW,height:52,rx:7,fill:'rgba(236,72,153,0.10)',stroke:C.plus,'stroke-width':1.2}));
+    svg.appendChild(Object.assign(el('text',{x:ux+unitW/2,y:ry+21,'text-anchor':'middle',fill:C.text,'font-size':11.5,'font-weight':700,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:u.t}));
+    svg.appendChild(Object.assign(el('text',{x:ux+unitW/2,y:ry+38,'text-anchor':'middle',fill:C.textSub,'font-size':9.5,'font-family':"'Noto Sans JP',sans-serif"}),{textContent:u.s}));
+  });
+  ry+=52+14;
+
+  // ── 企画立案フロー（PDCA）──
+  varrow(svg,RX+RW/2,ry,ry+16,C.plus);ry+=16;
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:58,rx:8,fill:'rgba(236,72,153,0.06)',stroke:'rgba(236,72,153,0.4)','stroke-width':1.3,'stroke-dasharray':'4,3'}));
+  svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+19,fill:C.plus,'font-size':11,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'▶ 企画を出すまでのフロー'}));
+  ['各ユニット定例でKPI低進捗の部分に施策を 立案 → 実行 → 振り返り','値引き・経費などお金がかかるもの以外は、武者さん決裁なし'].forEach((ln,i)=>{
+    svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+36+i*15,fill:C.text,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'・'+ln}));
+  });
+  ry+=58+24;
+
+  // ── 楽曲制作の促し ──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'④ 楽曲制作の促し方'}));
+  ry+=16;
+  const songLines=['● オーガニックお問い合わせ（全体の3〜4割）','● MPプロジェクト内の REC後CP・ストア配信CP','● VP連携強化（楽曲制作だけでなく Live2D 含む）','● ライブイベント参加者アンケートからの声掛け','● オリ曲制作促しをメインにしたセミナーイベント（立案→実行→終了後声掛け）'];
+  const songH=songLines.length*16+16;
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:songH,rx:8,fill:'rgba(236,72,153,0.05)',stroke:'rgba(236,72,153,0.3)','stroke-width':1}));
+  songLines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*16,fill:C.text,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+  ry+=songH+20;
+
+  // ── ボイトレの促し ──
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.plus,'font-size':12,'font-weight':700,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'⑤ ボイトレの促し方'}));
+  ry+=16;
+  const vtLines=['● 講師参加イベントの企画立案・実行','　 ▸ イベント参加前に受講必須のイベント','　 ▸ イベント内で受講を促すイベント'];
+  const vtH=vtLines.length*16+16;
+  svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:vtH,rx:8,fill:'rgba(236,72,153,0.05)',stroke:'rgba(236,72,153,0.3)','stroke-width':1}));
+  vtLines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*16,fill:C.text,'font-size':10,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
+  ry+=vtH+20;
+
+  // 出典注記
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+4,fill:C.textSub,'font-size':9,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'出典：事業オペレーション_MP+ スライド3枚目（伊藤）／経営戦略ch'}));
+  ry+=20;
+
+  y=Math.max(leftBottom,ry);
+  svg.setAttribute('width',RX+RW+40);svg.setAttribute('height',y);
 }
 // ═══════════════════════════════════════════════════════════════════
 // RM — クーリングオフ / 中途解約 ※基盤HTML踏襲
