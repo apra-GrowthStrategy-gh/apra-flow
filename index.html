@@ -1167,7 +1167,7 @@ function buildPlus(svg){
   svg.appendChild(el('rect',{x:RX,y:ry,width:RW,height:maniH,rx:8,fill:'rgba(236,72,153,0.05)',stroke:'rgba(236,72,153,0.35)','stroke-width':1}));
   maniLines.forEach((ln,i)=>svg.appendChild(Object.assign(el('text',{x:RX+14,y:ry+20+i*15.5,fill:C.text,'font-size':9.5,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:ln})));
   ry+=maniH+8;
-  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+10,fill:C.textSub,'font-size':9,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'※ 23卒2年目の頃よりやりづらくなっている（人が多い／MP+の方針が定まりきっていない）。'}));
+  svg.appendChild(Object.assign(el('text',{x:RX,y:ry+10,fill:C.textSub,'font-size':9,'text-anchor':'start','font-family':"'Noto Sans JP',sans-serif"}),{textContent:'※ 設立当時より人が多い／MP+の方針が浸透しきっていない。'}));
   ry+=26;
 
   // 出典注記
